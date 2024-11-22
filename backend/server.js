@@ -13,10 +13,10 @@ app.use(bodyParser.json());
 
 // Create a MySQL connection
 const db = mysql.createConnection({
-  host: 'localhost',
+  host: '127.0.0.1',
   user: 'root',
-  password: 'ARAFAT3453', // Replace with your MySQL password
-  database: 'ServiceTechnicianFinder',
+  password: 'AB12cd34@.', // Replace with your MySQL password
+  database: 'CSE',
 });
 
 // JWT Secret Key (Use environment variables in production)
@@ -24,23 +24,43 @@ const SECRET_KEY = 'your_secret_key';
 
 // User Sign-Up route
 app.post('/signup', (req, res) => {
-  const { user_name, email, password, phone_number, role } = req.body;
+  const { user_id, name, email, password, phone_number, role } = req.body;
 
-  if (!user_name || !email || !password || !role) {
+  if (!user_id || !name || !email || !password || !role) {
     return res.status(400).json({ success: false, message: 'All fields are required' });
   }
 
-  bcrypt.hash(password, 10, (err, hashedPassword) => {
+  // Check if user_id already exists
+  const checkUserIdQuery = 'SELECT * FROM User WHERE user_id = ?';
+  db.query(checkUserIdQuery, [user_id], (err, results) => {
     if (err) {
-      return res.status(500).json({ success: false, message: 'Error during password hashing.' });
+      return res.status(500).json({ success: false, message: 'Database query error.' });
+    }
+    if (results.length > 0) {
+      return res.status(400).json({ success: false, message: 'User ID already exists.' });
     }
 
-    const query = 'INSERT INTO User (user_name, email, password, phone_number, role) VALUES (?, ?, ?, ?, ?)';
-    db.query(query, [user_name, email, hashedPassword, phone_number, role], (err, results) => {
+    // Hash password
+    bcrypt.hash(password, 10, (err, hashedPassword) => {
       if (err) {
-        return res.status(500).json({ success: false, message: 'Error during sign-up. Please try again.' });
+        return res.status(500).json({ success: false, message: 'Error during password hashing.' });
       }
-      res.json({ success: true, message: 'User created successfully!' });
+
+      // Insert user into the database
+      const query =
+        'INSERT INTO User (user_id, name, email, password, phone_number, role) VALUES (?, ?, ?, ?, ?, ?)';
+      db.query(
+        query,
+        [user_id, name, email, hashedPassword, phone_number, role],
+        (err, results) => {
+          if (err) {
+            return res
+              .status(500)
+              .json({ success: false, message: 'Error during sign-up. Please try again.' });
+          }
+          res.json({ success: true, message: 'User created successfully!' });
+        }
+      );
     });
   });
 });
@@ -138,14 +158,10 @@ app.delete('/delete-account', authenticateJWT, (req, res) => {
   });
 });
 
-
-
-
 // Protected Route Example (Dashboard)
 app.get('/dashboard', authenticateJWT, (req, res) => {
   res.json({ success: true, message: `Welcome to the dashboard, user ${req.user.user_id}` });
 });
-
 
 // Server setup
 const PORT = process.env.PORT || 8000;

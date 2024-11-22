@@ -9,10 +9,11 @@ import styles from "../styles/SignUp.module.css";
 export const validate = (data) => {
   const errors = {};
 
-  if (!data.user_name.trim()) errors.user_name = "Name is required.";
+  if (!data.user_id.trim()) errors.user_id = "User ID is required.";
+  if (!data.name.trim()) errors.name = "Name is required.";
   if (!data.email.trim()) errors.email = "Email is required.";
-  if (!data.phone_number.trim() || !/^\d{11}$/.test(data.phone_number))
-    errors.phone_number = "Valid 11-digit phone number is required.";
+  if (!data.phone_number.trim() || !/^\d{11,15}$/.test(data.phone_number))
+    errors.phone_number = "Valid phone number is required.";
   if (!data.password.trim()) errors.password = "Password is required.";
   else if (data.password.length < 6) errors.password = "Password must be at least 6 characters.";
   if (data.confirmPassword !== data.password)
@@ -24,10 +25,11 @@ export const validate = (data) => {
 
 const SignUp = () => {
   const [data, setData] = useState({
-    user_name: "",
+    user_id: "",
+    name: "", // Changed from user_name to name
     email: "",
     phone_number: "",
-    role: "customer",
+    role: "Member", // Default role is Member
     password: "",
     confirmPassword: "",
   });
@@ -82,14 +84,25 @@ const SignUp = () => {
         <h2>Sign Up</h2>
         <input
           type="text"
-          name="user_name"
-          placeholder="Name"
-          value={data.user_name}
+          name="user_id"
+          placeholder="User ID"
+          value={data.user_id}
           onChange={changeHandler}
           onBlur={blurHandler}
         />
-        {touched.user_name && errors.user_name && (
-          <span className={styles.error}>{errors.user_name}</span>
+        {touched.user_id && errors.user_id && (
+          <span className={styles.error}>{errors.user_id}</span>
+        )}
+        <input
+          type="text"
+          name="name" // Changed from user_name to name
+          placeholder="Name"
+          value={data.name}
+          onChange={changeHandler}
+          onBlur={blurHandler}
+        />
+        {touched.name && errors.name && (
+          <span className={styles.error}>{errors.name}</span>
         )}
         <input
           type="email"
@@ -119,8 +132,8 @@ const SignUp = () => {
           onChange={changeHandler}
           onBlur={blurHandler}
         >
-          <option value="customer">Customer</option>
-          <option value="technician">Technician</option>
+          <option value="Admin">Admin</option>
+          <option value="Member">Member</option>
         </select>
         {touched.role && errors.role && (
           <span className={styles.error}>{errors.role}</span>
