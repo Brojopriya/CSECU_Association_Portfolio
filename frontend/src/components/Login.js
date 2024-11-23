@@ -1,82 +1,96 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import './Login.css';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import styles from "../styles/SignUp.module.css";
+import axios from "axios";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const changeHandler = (event) => {
+    setData({ ...data, [event.target.name]: event.target.value });
+  };
 
-    if (!email || !password) {
-      setError('Please enter email and password.');
-      return;
-    }
+  const validate = () => {
+    const newErrors = {};
+    if (!data.email.trim()) newErrors.email = "Email is required.";
+    if (!data.password.trim()) newErrors.password = "Password is required.";
+    return newErrors;
+  };
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address.');
-      return;
-    }
+   const submitHandler = async (event) => {
+    event.preventDefault();
+    const validationErrors = validate();
 
-    try {
-      const response = await axios.post('http://localhost:8000/login', { email, password });
-
-      if (response.data.success) {
-        localStorage.setItem('token', response.data.token);
-        navigate('/dashboard');
-      } else {
-        setError(response.data.message || 'Login failed.');
+    if (Object.keys(validationErrors).length === 0) {
+      try {
+        const response = await axios.post("http://localhost:8000/login", {
+          email: data.email,
+          password: data.password,
+        });
+       if (response.data.success) {
+          toast.success("Login successful!");
+          localStorage.setItem("token", response.data.token);
+          navigate("/dashboard");
+        } else {
+          toast.error(response.data.message || "Login failed.");
+        }
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || "An error occurred during login."
+        );
       }
-    } catch (error) {
-      setError(error.response?.data?.message || 'An error occurred during login.');
+    } else {
+      setErrors(validationErrors);
     }
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h1>Login</h1>
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <br />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <br />
-          <button type="submit">Login</button>
-        </form>
+    <div className={styles.container}>
+      <h2>Login</h2>
+      <form onSubmit={submitHandler}>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={data.email}
+          onChange={changeHandler}
+        />
+        {errors.email && <span className={styles.error}>{errors.email}</span>}
 
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={data.password}
+          onChange={changeHandler}
+        />
+        {errors.password && <span className={styles.error}>{errors.password}</span>}
 
-        <p>
-          Don't have an account?{' '}
-          <Link to="/signup" className="signup-link">
-            Sign Up
-          </Link>
-        </p>
+        <button type="submit">Log In</button>
 
-        {/* Forgot Password Link */}
-        <p>
-          <Link to="/forgot-password" className="forgot-password-link">
-            Forgot Password?
-          </Link>
-        </p>
-      </div>
+        <div className={styles.links}>
+          <p>
+            Don't have an account?{" "}
+            <Link to="/signup" className={styles.link}>
+              Sign Up
+            </Link>
+          </p>
+          <p>
+            Forgot your password?{" "}
+            <Link to="/forgot-password" className={styles.link}>
+              Reset it here
+            </Link>
+          </p>
+        </div>
+      </form>
+      <ToastContainer />
     </div>
   );
 };
