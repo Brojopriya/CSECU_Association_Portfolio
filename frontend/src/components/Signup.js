@@ -1,170 +1,170 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Added Link for navigation
 import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "../styles/SignUp.module.css";
 
-// Validation function
-export const validate = (data) => {
-  const errors = {};
-
-  if (!data.user_id.trim()) errors.user_id = "User ID is required.";
-  if (!data.name.trim()) errors.name = "Name is required.";
-  if (!data.email.trim()) errors.email = "Email is required.";
-  if (!data.phone_number.trim() || !/^\d{11,15}$/.test(data.phone_number))
-    errors.phone_number = "Valid phone number is required.";
-  if (!data.password.trim()) errors.password = "Password is required.";
-  else if (data.password.length < 6) errors.password = "Password must be at least 6 characters.";
-  if (data.confirmPassword !== data.password)
-    errors.confirmPassword = "Passwords do not match.";
-  if (!data.role) errors.role = "Role selection is required.";
-
-  return errors;
-};
-
 const SignUp = () => {
+  const [step, setStep] = useState(1);
   const [data, setData] = useState({
     user_id: "",
-    name: "", // Changed from user_name to name
+    name: "",
     email: "",
     phone_number: "",
-    role: "Member", // Default role is Member
+    role: "Member",
     password: "",
-    confirmPassword: "",
+    confirmPassword: "", // Added confirmPassword field
   });
-
   const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
-  const navigate = useNavigate(); // useNavigate hook to redirect
+  const navigate = useNavigate();
 
-  // Update errors whenever the data changes
-  useEffect(() => {
-    setErrors(validate(data));
-  }, [data]);
+  const validateStepOne = () => {
+    const newErrors = {};
+    if (!data.user_id.trim()) newErrors.user_id = "User ID is required.";
+    if (!data.name.trim()) newErrors.name = "Name is required.";
+    if (!data.email.trim()) newErrors.email = "Email is required.";
+    if (!data.phone_number.trim() || !/^\d{11,15}$/.test(data.phone_number))
+      newErrors.phone_number = "Valid phone number is required.";
+    return newErrors;
+  };
+
+  const validateStepTwo = () => {
+    const newErrors = {};
+    if (!data.password.trim()) newErrors.password = "Password is required.";
+    else if (data.password.length < 6)
+      newErrors.password = "Password must be at least 6 characters.";
+    if (!data.confirmPassword.trim())
+      newErrors.confirmPassword = "Confirm Password is required.";
+    else if (data.password !== data.confirmPassword)
+      newErrors.confirmPassword = "Passwords do not match.";
+    return newErrors;
+  };
 
   const changeHandler = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
   };
 
-  const blurHandler = (event) => {
-    setTouched({ ...touched, [event.target.name]: true });
+  const nextStep = () => {
+    const validationErrors = validateStepOne();
+    if (Object.keys(validationErrors).length === 0) {
+      setErrors({});
+      setStep(2);
+    } else {
+      setErrors(validationErrors);
+    }
   };
 
   const submitHandler = async (event) => {
     event.preventDefault();
-
-    // Final validation before submission
-    const validationErrors = validate(data);
-    setErrors(validationErrors);
-
+    const validationErrors = validateStepTwo();
     if (Object.keys(validationErrors).length === 0) {
-      const url = `http://localhost:8000/signup`; // Ensure this URL matches the backend API route
       try {
-        const response = await axios.post(url, data);
-        if (response.data.success) {
-          toast.success("Registered successfully!");
-          setTimeout(() => {
-            navigate("/login"); // Redirect to login page after 5 seconds
-          }, 5000);
+        const response = await fetch("http://localhost:8000/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        if (result.success) {
+          toast.success("Signup successful!");
+          navigate("/login"); // Redirect to login after signup
         } else {
-          toast.error(response.data.message || "Something went wrong!");
+          toast.error(result.message || "Signup failed.");
         }
       } catch (error) {
-        toast.error("Something went wrong during registration.");
+        toast.error("Something went wrong.");
       }
     } else {
-      toast.error("Please fix the errors before submitting.");
+      setErrors(validationErrors);
     }
   };
 
   return (
     <div className={styles.container}>
-      <form onSubmit={submitHandler}>
-        <h2>Sign Up</h2>
-        <input
-          type="text"
-          name="user_id"
-          placeholder="User ID"
-          value={data.user_id}
-          onChange={changeHandler}
-          onBlur={blurHandler}
-        />
-        {touched.user_id && errors.user_id && (
-          <span className={styles.error}>{errors.user_id}</span>
-        )}
-        <input
-          type="text"
-          name="name" // Changed from user_name to name
-          placeholder="Name"
-          value={data.name}
-          onChange={changeHandler}
-          onBlur={blurHandler}
-        />
-        {touched.name && errors.name && (
-          <span className={styles.error}>{errors.name}</span>
-        )}
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={data.email}
-          onChange={changeHandler}
-          onBlur={blurHandler}
-        />
-        {touched.email && errors.email && (
-          <span className={styles.error}>{errors.email}</span>
-        )}
-        <input
-          type="text"
-          name="phone_number"
-          placeholder="Phone"
-          value={data.phone_number}
-          onChange={changeHandler}
-          onBlur={blurHandler}
-        />
-        {touched.phone_number && errors.phone_number && (
-          <span className={styles.error}>{errors.phone_number}</span>
-        )}
-        <select
-          name="role"
-          value={data.role}
-          onChange={changeHandler}
-          onBlur={blurHandler}
-        >
-          <option value="Admin">Admin</option>
-          <option value="Member">Member</option>
-        </select>
-        {touched.role && errors.role && (
-          <span className={styles.error}>{errors.role}</span>
-        )}
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={data.password}
-          onChange={changeHandler}
-          onBlur={blurHandler}
-        />
-        {touched.password && errors.password && (
-          <span className={styles.error}>{errors.password}</span>
-        )}
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={data.confirmPassword}
-          onChange={changeHandler}
-          onBlur={blurHandler}
-        />
-        {touched.confirmPassword && errors.confirmPassword && (
-          <span className={styles.error}>{errors.confirmPassword}</span>
-        )}
-        <button type="submit">Sign Up</button>
-        <p>
-          Already have an account? <Link to="/login">Sign In</Link>
-        </p>
-      </form>
+      <h2>{step === 1 ? "Sign Up" : "Password"}</h2>
+      {step === 1 ? (
+        <form>
+          <input
+            type="text"
+            name="user_id"
+            placeholder="User ID"
+            value={data.user_id}
+            onChange={changeHandler}
+          />
+          {errors.user_id && <span className={styles.error}>{errors.user_id}</span>}
+
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={data.name}
+            onChange={changeHandler}
+          />
+          {errors.name && <span className={styles.error}>{errors.name}</span>}
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={data.email}
+            onChange={changeHandler}
+          />
+          {errors.email && <span className={styles.error}>{errors.email}</span>}
+
+          <input
+            type="text"
+            name="phone_number"
+            placeholder="Phone Number"
+            value={data.phone_number}
+            onChange={changeHandler}
+          />
+          {errors.phone_number && (
+            <span className={styles.error}>{errors.phone_number}</span>
+          )}
+
+          <select name="role" value={data.role} onChange={changeHandler}>
+            <option value="Admin">Admin</option>
+            <option value="Member">Member</option>
+          </select>
+
+          <button type="button" onClick={nextStep}>
+            Next
+          </button>
+
+          <p>
+            Already have an account?{" "}
+            <Link to="/login" className={styles.link}>
+              Log In
+            </Link>
+          </p>
+        </form>
+      ) : (
+        <form onSubmit={submitHandler}>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={data.password}
+            onChange={changeHandler}
+          />
+          {errors.password && (
+            <span className={styles.error}>{errors.password}</span>
+          )}
+
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={data.confirmPassword}
+            onChange={changeHandler}
+          />
+          {errors.confirmPassword && (
+            <span className={styles.error}>{errors.confirmPassword}</span>
+          )}
+
+          <button type="submit">Submit</button>
+        </form>
+      )}
       <ToastContainer />
     </div>
   );
