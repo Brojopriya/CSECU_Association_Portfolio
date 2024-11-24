@@ -162,6 +162,44 @@ app.delete('/delete-account', authenticateJWT, (req, res) => {
 app.get('/dashboard', authenticateJWT, (req, res) => {
   res.json({ success: true, message: `Welcome to the dashboard, user ${req.user.user_id}` });
 });
+// Get Clubs for User
+// Get all Clubs (Anyone can view all clubs)
+app.get('/clubs/all', (req, res) => {
+  const query = 'SELECT * FROM Club';
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Database query error.' });
+    }
+    res.json({ clubs: results });
+  });
+});
+
+// Get all Events (Anyone can view all events)
+app.get('/events/all', (req, res) => {
+  const query = `
+    SELECT Event.*, Club.club_name 
+    FROM Event 
+    JOIN Club ON Event.club_id = Club.club_id
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Database query error.' });
+    }
+    res.json({ events: results });
+  });
+});
+
+// Get all Resources (Anyone can view all resources)
+app.get('/resources/all', (req, res) => {
+  const query = 'SELECT * FROM Resource';
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Database query error.' });
+    }
+    res.json({ resources: results });
+  });
+});
+
 
 // Server setup
 const PORT = process.env.PORT || 8000;

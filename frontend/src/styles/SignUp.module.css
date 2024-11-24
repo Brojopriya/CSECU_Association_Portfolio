@@ -1,7 +1,7 @@
 /* General body styling */
 body {
   font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #1261a6, #11b9c2);
+  background: linear-gradient(135deg, #8ac9c2, #15aea2);
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -31,12 +31,12 @@ body::before {
   padding: 20px;
   background-color: #1e2326;
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 20px rgb(8, 8, 8);
   animation: fadeInUp 0.8s ease-out;
   transform-style: preserve-3d;
   transition: all 0.4s ease-in-out;
-  background: #0c2340;
-  color: rgb(64, 189, 211);
+  background: #052121;
+  color: rgb(36, 194, 186);
 }
 
 /* Heading styling */
@@ -45,7 +45,7 @@ h2 {
   font-size: 20px; /* Slightly larger font size */
   margin-bottom: 15px;
   text-align: center;
-  color: rgb(64, 189, 211);
+  color: rgb(9, 246, 234);
   font-weight: bold; /* Make the heading bold */
 }
 
@@ -64,7 +64,7 @@ input, select, button {
   font-size: 14px;
   font-weight: 500;
   border-radius: 5px;
-  border: 1px solid #dfdddd;
+  border: 1px solid #dfddddc5;
   outline: none;
   transition: all 0.3s ease;
 }
@@ -75,13 +75,13 @@ input::placeholder {
 }
 
 input:focus, button:hover {
-  border-color: #0ac6d4;
-  box-shadow: 0 0 6px rgba(5, 87, 116, 0.7);
+  border-color: #0ad4cd;
+  box-shadow: 0 0 6px rgba(5, 109, 116, 0.7);
   transform: scale(1.03);
 }
 
 button {
-  background-color: #0c7b8c;
+  background-color: #0a8472;
   color: white;
   font-weight: bold; /* Make button text bold */
   cursor: pointer;
@@ -138,5 +138,5 @@ button:active {
 }
 
 .login-box a:hover {
-  color: #068192;
+  color: #0bab9d;
 }

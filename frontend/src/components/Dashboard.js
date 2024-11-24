@@ -1,60 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const [message, setMessage] = useState('');
-  const navigate = useNavigate(); // To navigate after deletion
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios
-        .get('http://localhost:8000/dashboard', {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((response) => {
-          setMessage(response.data.message);
-        })
-        .catch(() => {
-          setMessage('Access denied. Please log in.');
-        });
-    } else {
-      setMessage('Access denied. Please log in.');
-    }
-  }, []);
-
-  // Delete Account Function
-  const handleDeleteAccount = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios
-        .delete('http://localhost:8000/delete-account', {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then(() => {
-          setMessage('Account deleted successfully. Redirecting to signup...');
-          localStorage.removeItem('token'); // Remove token on successful deletion
-          setTimeout(() => {
-            navigate('/signup'); // Redirect to signup page after 5 seconds
-          }, 5000);
-        })
-        .catch(() => {
-          setMessage('Error deleting account.');
-        });
-    }
+  // Handle button clicks to navigate to the appropriate page
+  const handleViewClubs = () => {
+    navigate('/clubs');
   };
 
-  // Logout Function
+  const handleViewEvents = () => {
+    navigate('/events');
+  };
+
+  const handleViewResources = () => {
+    navigate('/resources');
+  };
+
+  // Navigate to delete account page
+  const handleDeleteAccount = () => {
+    navigate('/delete-account');
+  };
+
+  // Navigate to logout page
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove token
-    navigate('/login'); // Redirect to login page
+    navigate('/logout');
   };
 
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>{message}</p>
+      <button onClick={handleViewClubs}>View All Clubs</button>
+      <button onClick={handleViewEvents}>View All Events</button>
+      <button onClick={handleViewResources}>View All Resources</button>
+
+      {/* Actions */}
       <button onClick={handleDeleteAccount}>Delete Account</button>
       <button onClick={handleLogout}>Logout</button>
     </div>

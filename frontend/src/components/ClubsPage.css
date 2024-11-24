@@ -1,0 +1,101 @@
+/* General Styling */
+.clubs-page {
+  padding: 20px;
+  background-color: #0a6265;
+  font-family: 'Roboto', sans-serif;
+}
+
+.page-title {
+  font-size: 2rem;
+  text-align: center;
+  color: #c2efe5;
+  margin-bottom: 20px;
+}
+
+/* Loading and Error Message Styling */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+.error-message {
+  color: #ff4d4d;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Clubs Container */
+.clubs-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Club Card Styling */
+.club-card {
+  background-color: #c9e0df;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.club-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Club Header Styling */
+.club-header {
+  margin-bottom: 15px;
+}
+
+.club-name {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+/* Club Description */
+.club-description {
+  font-size: 1rem;
+  color: #054c4f;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Button Styling */
+.join-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #189ea8;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.join-btn:hover {
+  background-color: #023742;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .clubs-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .club-card {
+    padding: 15px;
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+  }
+}
