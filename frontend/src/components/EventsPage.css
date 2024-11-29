@@ -1,94 +1,24 @@
-/* General styling for the Events page */
-.events-page {
+.event-page {
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
-/* Style for the loading state */
-.loading {
-  text-align: center;
-  padding: 50px 0;
+.page-title {
+  color: #045a5a;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
-/* Responsive design: Adjust layout for smaller screens */
-@media screen and (max-width: 768px) {
-  .events-page {
-    padding: 10px;
-  }
-
-  /* Adjust Grid for mobile: full-width cards */
-  .MuiGrid-item {
-    padding: 10px;
-  }
-
-  .loading {
-    padding: 30px 0;
-  }
+.event-card {
+  border: 1px solid #035f5f;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
-/* Card styling */
-.MuiCard-root {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
-}
-
-/* Card hover effect */
-.MuiCard-root:hover {
-  transform: translateY(-5px); /* Slightly raise the card */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
-}
-
-/* Spacing for card content */
-.MuiCardContent-root {
-  padding: 16px;
-}
-
-/* Typography adjustments */
-.MuiTypography-h5 {
-  font-weight: 600;
-  font-size: 1.25rem; /* Adjusted size */
-}
-
-.MuiTypography-body1 {
-  font-size: 1rem; /* Adjusted description font size */
-  line-height: 1.5;
-  color: #333;
-}
-
-.MuiTypography-body2 {
-  font-size: 0.875rem;
-  color: #8fbdc3; /* Lighter color for date and location */
-}
-
-/* Button styling */
-.MuiButton-root {
-  text-transform: none; /* Disable uppercase text */
-  font-weight: bold;
-  
-}
-
-.MuiButton-root:hover {
-  background-color: #14aec6; /* Blue button hover effect */
-  color: rgb(244, 236, 236);
-}
-
-/* Snackbar styling */
-.MuiSnackbarContent-root {
-  background-color: #f44336; /* Red background for errors */
-}
-
-.MuiSnackbarContent-message {
-  font-size: 1rem;
-  color: white;
-}
-
-/* Additional styling for error messages */
-.MuiAlert-root {
-  font-size: 1rem;
-}
-
-/* Adding some space between Grid items */
-.MuiGrid-item {
-  padding: 10px;
+.details-link {
+  text-decoration: none;
+  color: #007bff;
+  margin-top: 10px;
+  display: inline-block;
 }

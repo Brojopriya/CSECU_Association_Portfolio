@@ -46,7 +46,7 @@ const ClubsPage = () => {
               </div>
               <p className="club-description">{club.description}</p>
               {/* Optionally, you can add icons, links, or more details */}
-              <button className="join-btn">Join Now</button>
+              <button className="join-btn">EXPLORE</button>
             </div>
           ))}
         </div>

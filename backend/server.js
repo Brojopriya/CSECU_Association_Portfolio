@@ -11,11 +11,10 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Create a MySQL connection
 const db = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
-  password: 'AB12cd34@.', // Replace with your MySQL password
+  password: 'AB12cd34@.',
   database: 'CSE',
 });
 
@@ -93,6 +92,7 @@ app.post('/login', (req, res) => {
         success: true,
         message: 'Login successful!',
         token: token,
+        role: results[0].role
       });
     });
   });
@@ -116,6 +116,7 @@ const authenticateJWT = (req, res, next) => {
   });
 };
 
+// Reset Password Route
 app.post('/reset-password', (req, res) => {
   const { email, password } = req.body;
 
@@ -143,6 +144,7 @@ app.post('/reset-password', (req, res) => {
   });
 });
 
+// Delete Account Route
 app.delete('/delete-account', authenticateJWT, (req, res) => {
   const userId = req.user.user_id; // Assuming the token contains the user_id
   const query = 'DELETE FROM User WHERE user_id = ?';
@@ -158,12 +160,12 @@ app.delete('/delete-account', authenticateJWT, (req, res) => {
   });
 });
 
-// Protected Route Example (Dashboard)
+// Dashboard (Protected Route)
 app.get('/dashboard', authenticateJWT, (req, res) => {
   res.json({ success: true, message: `Welcome to the dashboard, user ${req.user.user_id}` });
 });
-// Get Clubs for User
-// Get all Clubs (Anyone can view all clubs)
+
+// Get All Clubs
 app.get('/clubs/all', (req, res) => {
   const query = 'SELECT * FROM Club';
   db.query(query, (err, results) => {
@@ -174,7 +176,7 @@ app.get('/clubs/all', (req, res) => {
   });
 });
 
-// Get all Events (Anyone can view all events)
+// Get All Events
 app.get('/events/all', (req, res) => {
   const query = `
     SELECT Event.*, Club.club_name 
@@ -189,7 +191,7 @@ app.get('/events/all', (req, res) => {
   });
 });
 
-// Get all Resources (Anyone can view all resources)
+// Get All Resources
 app.get('/resources/all', (req, res) => {
   const query = 'SELECT * FROM Resource';
   db.query(query, (err, results) => {
@@ -197,6 +199,96 @@ app.get('/resources/all', (req, res) => {
       return res.status(500).json({ success: false, message: 'Database query error.' });
     }
     res.json({ resources: results });
+  });
+});
+
+// Get Event Details
+app.get('/events/:eventId', (req, res) => {
+  const eventId = req.params.eventId;
+
+  const query = `
+    SELECT Event.*, Club.club_name 
+    FROM Event 
+    JOIN Club ON Event.club_id = Club.club_id
+    WHERE Event.event_id = ?
+  `;
+
+  db.query(query, [eventId], (err, results) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Database query error.' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'Event not found.' });
+    }
+
+    res.json({ event: results[0] });
+  });
+});
+
+// Register for an Event
+app.post('/register/:eventId', authenticateJWT, (req, res) => {
+  const userId = req.user.user_id;  // Get user ID from JWT token
+  const eventId = req.params.eventId;  // Get event ID from URL
+
+  try {
+    // Check if the user is already registered for the event
+    const checkRegistrationQuery = 'SELECT * FROM Registrations WHERE user_id = ? AND event_id = ?';
+    db.query(checkRegistrationQuery, [userId, eventId], (err, results) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: 'Database query error.' });
+      }
+      if (results.length > 0) {
+        return res.status(400).json({ success: false, message: 'You are already registered for this event.' });
+      }
+
+      // Insert into Registrations table
+      const registerQuery = 'INSERT INTO Registrations (user_id, event_id) VALUES (?, ?)';
+      db.query(registerQuery, [userId, eventId], (err, result) => {
+        if (err) {
+          return res.status(500).json({ success: false, message: 'Error registering for event.' });
+        }
+        res.json({ success: true, message: 'Successfully registered for the event!' });
+      });
+    });
+  } catch (error) {
+    console.error('Error during event registration:', error);
+    res.status(500).json({ success: false, message: 'Unexpected error occurred during registration.' });
+  }
+});
+
+app.post("/create-club", authenticateJWT, (req, res) => {
+  console.log("Create Club Endpoint Hit"); // Debugging log
+  console.log("Request User:", req.user); // User details from JWT
+  console.log("Request Body:", req.body); // Data sent from frontend
+
+  if (req.user.role !== "Admin") {
+    console.log("Access Denied: User Role is not Admin");
+    return res.status(403).json({ error: "Access denied" });
+  }
+
+  const { club_name, description, creation_date } = req.body;
+  const query =
+    "INSERT INTO Club (club_name, description, creation_date, user_id) VALUES (?, ?, ?, ?)";
+  db.query(query, [club_name, description, creation_date, req.user.user_id], (err) => {
+    if (err) {
+      console.error("Database Error:", err); // Log database error
+      return res.status(500).json({ error: "Failed to create club" });
+    }
+    console.log("Club Created Successfully"); // Success log
+    res.status(201).json({ message: "Club created successfully" });
+  });
+});
+
+
+// Create Event
+app.post("/create-event", authenticateJWT, (req, res) => {
+  if (req.user.role !== "Admin") return res.status(403).json({ error: "Access denied" });
+
+  const { event_name, club_id, event_date, event_description, location } = req.body;
+  const query = "INSERT INTO Event (event_name, club_id, event_date, event_description, location) VALUES (?, ?, ?, ?, ?)";
+  db.query(query, [event_name, club_id, event_date, event_description, location], (err) => {
+    if (err) return res.status(500).json({ error: "Failed to create event" });
+    res.status(201).json({ message: "Event created successfully" });
   });
 });
 

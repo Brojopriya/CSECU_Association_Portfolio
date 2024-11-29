@@ -34,11 +34,20 @@ const Login = () => {
           email: data.email,
           password: data.password,
         });
-       if (response.data.success) {
-          toast.success("Login successful!");
-          localStorage.setItem("token", response.data.token);
-          navigate("/dashboard");
+        if (response.data.success) {
+        // Save token and role in localStorage
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('role', response.data.role); // Store user role
+
+        // Redirect based on role
+        if (response.data.role === 'Member') {
+          navigate('/dashboard');
+        } else if (response.data.role === 'Admin') {
+          navigate('/admin-dashboard');
         } else {
+          setErrors('Invalid user role.');
+        }
+      } else {
           toast.error(response.data.message || "Login failed.");
         }
       } catch (error) {

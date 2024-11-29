@@ -1,7 +1,7 @@
 /* General body styling */
 body {
   font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, #8ac9c2, #15aea2);
+  background: linear-gradient(135deg, #8ac9c2, #e7eceb);
   height: 100vh;
   display: flex;
   justify-content: center;

@@ -1,15 +1,15 @@
 /* General Styling */
 .clubs-page {
   padding: 20px;
-  background-color: #0a6265;
+  background-color: #88bdbe;
   font-family: 'Roboto', sans-serif;
 }
 
 .page-title {
-  font-size: 2rem;
+  color: #f5eded;
+  font-size: 3rem;
+  font-weight: bold;
   text-align: center;
-  color: #c2efe5;
-  margin-bottom: 20px;
 }
 
 /* Loading and Error Message Styling */

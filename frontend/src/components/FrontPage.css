@@ -8,7 +8,7 @@
 /* Body Styling */
 body {
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #d0e6f1, #a2c8e6);
+  background: linear-gradient(135deg, #d0e6f1, #eceff1);
   color: #000;
   overflow: hidden;
   height: 100vh;
@@ -72,6 +72,7 @@ body {
 }
 
 .btn:hover {
+  background: linear-gradient(135deg, #2b7889, #032325);
   transform: scale(1.05);
   box-shadow: 0 12px 25px rgba(247, 243, 243, 0.42);
 }
