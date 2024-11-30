@@ -37,29 +37,38 @@ const ClubDetailsPage = () => {
 
     // Make a POST request to join the club
     axios
-      .post('http://localhost:8000/club/join', { club_id: clubId })
-      .then(response => {
-        setJoining(false);
-        
-        // Update total members after successful join
-        setClub(prevState => ({
-          ...prevState,
-          totalMembers: prevState.totalMembers + 1,
-        }));
-        
-        // Set user as joined and show welcome message
-        setHasJoined(true);
-        setWelcomeMessage(response.data.welcomeMessage);
-      })
-      .catch(error => {
-        setJoining(false);
-        if (error.response && error.response.data.message) {
-          setJoinError(error.response.data.message);
-        } else {
-          setJoinError('Error joining club. Please try again later.');
-        }
-        console.error('Error joining club:', error);
-      });
+  .post(
+    'http://localhost:8000/club/join', 
+    { club_id: clubId }, // Request body with club ID
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}` // Add JWT token from local storage
+      }
+    }
+  )
+  .then(response => {
+    setJoining(false);
+
+    // Update total members after successful join
+    setClub(prevState => ({
+      ...prevState,
+      totalMembers: prevState.totalMembers + 1,
+    }));
+
+    // Set user as joined and show welcome message
+    setHasJoined(true);
+    setWelcomeMessage(response.data.message); // Use server response message
+  })
+  .catch(error => {
+    setJoining(false);
+    if (error.response && error.response.data.message) {
+      setJoinError(error.response.data.message);
+    } else {
+      setJoinError('Error joining club. Please try again later.');
+    }
+    console.error('Error joining club:', error);
+  });
+
   };
 
   return (

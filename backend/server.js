@@ -349,31 +349,28 @@ app.post('/register/:eventId', authenticateJWT, (req, res) => {
   const userId = req.user.user_id;  // Get user ID from JWT token
   const eventId = req.params.eventId;  // Get event ID from URL
 
-  try {
-    // Check if the user is already registered for the event
-    const checkRegistrationQuery = 'SELECT * FROM Registrations WHERE user_id = ? AND event_id = ?';
-    db.query(checkRegistrationQuery, [userId, eventId], (err, results) => {
-      if (err) {
-        return res.status(500).json({ success: false, message: 'Database query error.' });
-      }
-      if (results.length > 0) {
-        return res.status(400).json({ success: false, message: 'You are already registered for this event.' });
-      }
+  // Check if the user is already registered for the event
+  const checkRegistrationQuery = 'SELECT * FROM Registrations WHERE user_id = ? AND event_id = ?';
+  db.query(checkRegistrationQuery, [userId, eventId], (err, results) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Database query error.' });
+    }
 
-      // Insert into Registrations table
-      const registerQuery = 'INSERT INTO Registrations (user_id, event_id) VALUES (?, ?)';
-      db.query(registerQuery, [userId, eventId], (err, result) => {
-        if (err) {
-          return res.status(500).json({ success: false, message: 'Error registering for event.' });
-        }
-        res.json({ success: true, message: 'Successfully registered for the event!' });
-      });
+    if (results.length > 0) {
+      return res.status(400).json({ success: false, message: 'You are already registered for this event.' });
+    }
+
+    // Insert into Registrations table
+    const registerQuery = 'INSERT INTO Registrations (user_id, event_id) VALUES (?, ?)';
+    db.query(registerQuery, [userId, eventId], (err, result) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: 'Error registering for event.' });
+      }
+      res.json({ success: true, message: 'Successfully registered for the event!' });
     });
-  } catch (error) {
-    console.error('Error during event registration:', error);
-    res.status(500).json({ success: false, message: 'Unexpected error occurred during registration.' });
-  }
+  });
 });
+
 
 app.post("/create-club", authenticateJWT, (req, res) => {
   console.log("Create Club Endpoint Hit"); // Debugging log
@@ -439,14 +436,19 @@ app.get('/clubs/:clubId', (req, res) => {
 });
 
 // Join a club (POST request)
-app.post('/club/join', (req, res) => {
+app.post('/club/join', authenticateJWT, (req, res) => {
   const { club_id } = req.body;
-  const user_id = 1; // Example user_id, should come from authenticated session
+  const user_id = req.user.user_id;  // Retrieve user_id from the JWT payload (req.user)
+
+  if (!club_id) {
+    return res.status(400).json({ success: false, message: 'Club ID is required.' });
+  }
 
   // Check if the user is already a member of the club
   const checkQuery = 'SELECT * FROM Members WHERE user_id = ? AND club_id = ?';
   db.query(checkQuery, [user_id, club_id], (checkErr, checkResults) => {
     if (checkErr) {
+      console.error('Database error:', checkErr); // Log error for debugging
       return res.status(500).json({ success: false, message: 'Database error' });
     }
 
@@ -459,6 +461,7 @@ app.post('/club/join', (req, res) => {
     const insertQuery = 'INSERT INTO Members (user_id, club_id) VALUES (?, ?)';
     db.query(insertQuery, [user_id, club_id], (insertErr, insertResults) => {
       if (insertErr) {
+        console.error('Error inserting into Members table:', insertErr); // Log error for debugging
         return res.status(500).json({ success: false, message: 'Error joining club' });
       }
 
@@ -466,7 +469,6 @@ app.post('/club/join', (req, res) => {
     });
   });
 });
-
 
 
 
