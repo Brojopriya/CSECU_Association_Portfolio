@@ -59,6 +59,16 @@ const EventDetails = () => {
     }
   };
 
+  // Date formatting function (place this inside your component)
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options); // Formats like "Dec 1, 2024"
+  };
+
+  // Format the event date
+  const formattedDate = event ? formatDate(event.event_date) : '';
+
   if (loading) return <p>Loading event details...</p>;
   if (message) return <p className="error-message">{message}</p>;
 
@@ -71,42 +81,9 @@ const EventDetails = () => {
       {event && (
         <div className="event-details-container">
           <h1 className="event-title">{event.event_name}</h1>
-          <p className="event-description">{event.description}</p>
-          <p><strong>Date:</strong> {event.date}</p>
+          <p className="event-description">{event.event_description}</p>
+          <p><strong>Date:</strong> {formattedDate}</p> {/* Use the formatted date */}
           <p><strong>Location:</strong> {event.location}</p>
-
-          {/* Media Section */}
-          <div className="media-section">
-            <h3>Photos</h3>
-            <div className="media-container">
-              {event.photos?.length > 0 ? (
-                event.photos.map((photo, index) => (
-                  <img
-                    key={index}
-                    src={`http://localhost:8000/${photo}`}
-                    alt={`Event Photo ${index + 1}`}
-                    className="event-photo"
-                  />
-                ))
-              ) : (
-                <p>No photos available for this event.</p>
-              )}
-            </div>
-
-            <h3>Videos</h3>
-            <div className="media-container">
-              {event.videos?.length > 0 ? (
-                event.videos.map((video, index) => (
-                  <video key={index} controls className="event-video">
-                    <source src={`http://localhost:8000/${video}`} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                ))
-              ) : (
-                <p>No videos available for this event.</p>
-              )}
-            </div>
-          </div>
 
           {/* Registration Button */}
           {!hasRegistered ? (

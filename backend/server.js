@@ -326,21 +326,40 @@ app.get('/events/:eventId', (req, res) => {
   const eventId = req.params.eventId;
 
   const query = `
-    SELECT Event.*, Club.club_name 
-    FROM Event 
-    JOIN Club ON Event.club_id = Club.club_id
-    WHERE Event.event_id = ?
+    SELECT 
+      Event.event_id, 
+      Event.event_name, 
+      Event.event_date, 
+      Event.event_description, 
+      Event.location, 
+      Club.club_name
+    FROM 
+      Event 
+    JOIN 
+      Club 
+    ON 
+      Event.club_id = Club.club_id
+    WHERE 
+      Event.event_id = ?
   `;
 
   db.query(query, [eventId], (err, results) => {
     if (err) {
+      console.error('Database query error:', err);
       return res.status(500).json({ success: false, message: 'Database query error.' });
     }
+
     if (results.length === 0) {
       return res.status(404).json({ success: false, message: 'Event not found.' });
     }
 
-    res.json({ event: results[0] });
+    // Format the event data
+    const event = {
+      ...results[0],
+      event_date: results[0].event_date ? new Date(results[0].event_date).toISOString().split('T')[0] : null, // Ensure proper date format
+    };
+
+    res.json({ success: true, event });
   });
 });
 
@@ -399,15 +418,43 @@ app.post("/create-club", authenticateJWT, (req, res) => {
 
 // Create Event
 app.post("/create-event", authenticateJWT, (req, res) => {
-  if (req.user.role !== "Admin") return res.status(403).json({ error: "Access denied" });
+  if (req.user.role !== "Admin") {
+    return res.status(403).json({ error: "Access denied. Only Admins can create events." });
+  }
 
   const { event_name, club_id, event_date, event_description, location } = req.body;
-  const query = "INSERT INTO Event (event_name, club_id, event_date, event_description, location) VALUES (?, ?, ?, ?, ?)";
-  db.query(query, [event_name, club_id, event_date, event_description, location], (err) => {
-    if (err) return res.status(500).json({ error: "Failed to create event" });
-    res.status(201).json({ message: "Event created successfully" });
+
+  if (!event_name || !club_id || !event_date || !event_description || !location) {
+    return res.status(400).json({ error: "All fields are required to create an event." });
+  }
+
+  // Check if club_id exists
+  const clubCheckQuery = "SELECT * FROM Club WHERE club_id = ?";
+  db.query(clubCheckQuery, [club_id], (clubErr, clubResults) => {
+    if (clubErr) {
+      console.error("Database Error (Club Check):", clubErr);
+      return res.status(500).json({ error: "Internal server error while verifying club ID." });
+    }
+    if (clubResults.length === 0) {
+      return res.status(400).json({ error: "Invalid club ID." });
+    }
+
+    // Proceed to create the event
+    const query = `
+      INSERT INTO Event (event_name, club_id, event_date, event_description, location)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    db.query(query, [event_name, club_id, event_date, event_description, location], (err) => {
+      if (err) {
+        console.error("Database Error (Insert Event):", err);
+        return res.status(500).json({ error: "Failed to create event. Please try again later." });
+      }
+
+      res.status(201).json({ message: "Event created successfully." });
+    });
   });
 });
+
 
 
 //club de

@@ -6,9 +6,7 @@ function CreateClub() {
   const [clubData, setClubData] = useState({
     club_name: "",
     description: "",
-    creation_date: "",
-    image: null,
-    video: null
+    creation_date: ""
   });
 
   const handleChange = (e) => {
@@ -16,25 +14,14 @@ function CreateClub() {
     setClubData({ ...clubData, [name]: value });
   };
 
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    setClubData({ ...clubData, [name]: files[0] });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('club_name', clubData.club_name);
-    formData.append('description', clubData.description);
-    formData.append('creation_date', clubData.creation_date);
-    if (clubData.image) formData.append('image', clubData.image);
-    if (clubData.video) formData.append('video', clubData.video);
 
     try {
-      const response = await axios.post("http://localhost:8000/create-club", formData, {
+      const response = await axios.post("http://localhost:8000/create-club", clubData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-          'Content-Type': 'multipart/form-data',  // Set content type for file uploads
+          'Content-Type': 'application/json', // Set content type for JSON data
         },
       });
       alert(response.data.message);
@@ -79,26 +66,6 @@ function CreateClub() {
             value={clubData.creation_date}
             onChange={handleChange}
             required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label>Upload Club Image</label>
-          <input
-            type="file"
-            name="image"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-        </div>
-        
-        <div className="form-group">
-          <label>Upload Club Video</label>
-          <input
-            type="file"
-            name="video"
-            accept="video/*"
-            onChange={handleFileChange}
           />
         </div>
 
