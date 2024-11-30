@@ -1,66 +1,113 @@
 /* Dashboard Container */
 .dashboard-container {
-  font-family: Arial, sans-serif;
-  margin: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 40px auto;
+  max-width: 1200px;
+  background-color: #84a9ad28;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   position: relative; /* For positioning top-right buttons */
 }
 
-/* Top-right Buttons */
+/* Top-right Buttons (Logout & Delete Account) */
 .top-right-buttons {
   position: absolute;
   top: 20px;
   right: 20px;
   display: flex;
   gap: 10px;
+  z-index: 10;
 }
 
 /* General Button Styles */
 .btn {
-  padding: 12px 20px;
-  font-size: 1rem;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: white;
+.btn:hover {
+  transform: translateY(-2px);
 }
 
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
+/* Danger Button Style (Delete Account) */
 .btn-danger {
   background-color: #e3342f;
   color: white;
+  box-shadow: 0 3px 6px rgba(227, 52, 47, 0.3);
 }
 
 .btn-danger:hover {
   background-color: #c1272d;
 }
 
-.btn-secondary {
-  background-color: #6c757d;
+/* Warning Button Style (Logout) */
+.btn-warning {
+  background-color: #f59e42;
+  color: white;
+  box-shadow: 0 3px 6px rgba(245, 158, 66, 0.3);
+}
+
+.btn-warning:hover {
+  background-color: #d97706;
+}
+
+/* Profile Section */
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+/* Card Group for Buttons */
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+.card {
+  width: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card button {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background-color 0.3s ease;
+}
+
+.card button:hover {
+  background-color: #444;
   color: white;
 }
 
-.btn-secondary:hover {
-  background-color: #5a6268;
-}
-
-/* Dashboard Actions */
-.dashboard-actions {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 50px;
-}
-
-/* Heading */
-h1 {
+/* Title Section */
+.dashboard-title {
   text-align: center;
   color: #333;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  font-weight: 600;
 }

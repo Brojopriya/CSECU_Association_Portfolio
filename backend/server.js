@@ -1,15 +1,23 @@
 const express = require('express');
 const cors = require('cors');
+const multer = require('multer');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mysql = require('mysql2');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const path = require('path'); 
+const sanitizeFilename = (filename) => path.basename(filename);
+
+
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
 
 const db = mysql.createConnection({
   host: '127.0.0.1',
@@ -100,7 +108,7 @@ app.post('/login', (req, res) => {
 
 // Middleware to authenticate JWT
 const authenticateJWT = (req, res, next) => {
-  const token = req.header('Authorization')?.split(' ')[1]; // Expect "Bearer <token>"
+   const token = req.header('Authorization')?.split(' ')[1]; /// Expect "Bearer <token>"
 
   if (!token) {
     return res.status(403).json({ success: false, message: 'Access denied. No token provided.' });
@@ -170,7 +178,7 @@ app.get('/clubs/all', (req, res) => {
   const query = 'SELECT * FROM Club';
   db.query(query, (err, results) => {
     if (err) {
-      return res.status(500).json({ success: false, message: 'Database query error.' });
+      return res.status(500).json({ success: false, message: 'Error fetching clubs' });
     }
     res.json({ clubs: results });
   });
@@ -192,15 +200,126 @@ app.get('/events/all', (req, res) => {
 });
 
 // Get All Resources
+// Multer configuration for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads'); // Directory where files will be stored
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`); // Generate a unique file name
+  },
+});
+
+const upload = multer({ storage });
+
+// API Endpoints
+
+// 1. Fetch All Resources
 app.get('/resources/all', (req, res) => {
-  const query = 'SELECT * FROM Resource';
+  const query = `
+    SELECT 
+      resource_id, 
+      user_id, 
+      title, 
+      type, 
+      upload_date, 
+      file_path, 
+      description 
+    FROM Resource
+  `;
+
   db.query(query, (err, results) => {
     if (err) {
+      console.error('Database query error:', err.message);
       return res.status(500).json({ success: false, message: 'Database query error.' });
     }
-    res.json({ resources: results });
+
+    res.status(200).json({
+      success: true,
+      resources: results.map((resource) => ({
+        ...resource,
+        file_url: `http://localhost:${PORT}/uploads/${path.basename(resource.file_path)}`,
+      })),
+    });
   });
 });
+
+// 2. Upload a New Resource
+app.post('/resources/upload', upload.single('file'), (req, res) => {
+  const { title, description, user_id } = req.body;
+
+  if (!req.file || !title || !user_id) {
+    return res.status(400).json({ success: false, message: 'Missing required fields or file.' });
+  }
+
+  const filePath = `uploads/${req.file.filename}`;
+  const fileType = req.file.mimetype;
+
+  const query = `
+    INSERT INTO Resource (user_id, title, type, file_path, description, upload_date)
+    VALUES (?, ?, ?, ?, ?, NOW())
+  `;
+  const values = [user_id, title, fileType, filePath, description];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      console.error('Database insertion error:', err.message);
+      return res.status(500).json({ success: false, message: 'Failed to save the resource.' });
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Resource uploaded successfully.',
+      resource: {
+        resource_id: result.insertId,
+        user_id,
+        title,
+        type: fileType,
+        file_url: `http://localhost:${PORT}/${filePath}`,
+        description,
+        upload_date: new Date().toISOString(),
+      },
+    });
+  });
+});
+
+// 3. Download a Resource (Optional
+// Download a Resource
+// Download a Resource
+app.get('/resources/download/:filename', (req, res) => {
+  const { filename } = req.params;
+
+  // Query the database to fetch the file path from the 'Resource' table
+  const query = 'SELECT file_path FROM Resource WHERE file_path LIKE ?';
+  db.query(query, [`%${filename}`], (err, results) => {
+    if (err) {
+      console.error('Database query error:', err.message);
+      return res.status(500).json({ success: false, message: 'Error fetching file details from the database.' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'File not found in the database.' });
+    }
+
+    // Get the relative file path from the database
+    const filePath = path.join(__dirname, results[0].file_path);
+
+    // Check if the file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ success: false, message: 'File not found on the server.' });
+    }
+
+    // Serve the file for download
+    res.download(filePath, filename, (err) => {
+      if (err) {
+        console.error('Error downloading the file:', err.message);
+        return res.status(500).json({ success: false, message: 'Error while downloading the file.' });
+      }
+    });
+  });
+});
+
+
 
 // Get Event Details
 app.get('/events/:eventId', (req, res) => {
@@ -291,6 +410,64 @@ app.post("/create-event", authenticateJWT, (req, res) => {
     res.status(201).json({ message: "Event created successfully" });
   });
 });
+
+
+//club de
+app.get('/clubs/:clubId', (req, res) => {
+  const clubId = req.params.clubId;
+  const query = 'SELECT * FROM Club WHERE club_id = ?';
+  
+  db.query(query, [clubId], (err, results) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: 'Error fetching club details' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'Club not found' });
+    }
+    const club = results[0];
+    
+    // Get the total number of members
+    const membersQuery = 'SELECT COUNT(*) AS total_members FROM Members WHERE club_id = ?';
+    db.query(membersQuery, [clubId], (err, memberResults) => {
+      if (err) {
+        return res.status(500).json({ success: false, message: 'Error fetching member count' });
+      }
+      club.total_members = memberResults[0].total_members;
+      res.json({ club });
+    });
+  });
+});
+
+// Join a club (POST request)
+app.post('/club/join', (req, res) => {
+  const { club_id } = req.body;
+  const user_id = 1; // Example user_id, should come from authenticated session
+
+  // Check if the user is already a member of the club
+  const checkQuery = 'SELECT * FROM Members WHERE user_id = ? AND club_id = ?';
+  db.query(checkQuery, [user_id, club_id], (checkErr, checkResults) => {
+    if (checkErr) {
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+
+    if (checkResults.length > 0) {
+      // User is already a member of the club
+      return res.status(400).json({ success: false, message: 'You have already joined this club' });
+    }
+
+    // If not a member, insert into the Members table
+    const insertQuery = 'INSERT INTO Members (user_id, club_id) VALUES (?, ?)';
+    db.query(insertQuery, [user_id, club_id], (insertErr, insertResults) => {
+      if (insertErr) {
+        return res.status(500).json({ success: false, message: 'Error joining club' });
+      }
+
+      res.json({ success: true, message: 'Joined the club successfully' });
+    });
+  });
+});
+
+
 
 
 // Server setup

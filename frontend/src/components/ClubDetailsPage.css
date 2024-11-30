@@ -1,0 +1,89 @@
+.club-details-page {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.club-details-container {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.club-name {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.club-description {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.club-meta {
+  font-size: 16px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.club-meta strong {
+  color: #333;
+}
+
+.join-club-btn {
+  padding: 12px 25px;
+  background-color: #077e4f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  display: block;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.join-club-btn:hover {
+  background-color: #045a3e;
+}
+
+.join-club-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+/* Add to ClubDetailsPage.css */
+.club-video {
+  margin: 20px 0;
+}
+
+.gallery-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.gallery-image {
+  max-width: 200px;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.club-photo {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+.club-description, .club-start-date, .club-members, .club-about {
+  margin-bottom: 15px;
+}
+
+h3 {
+  margin-top: 20px;
+  font-size: 1.5rem;
+}

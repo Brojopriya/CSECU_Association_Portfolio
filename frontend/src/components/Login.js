@@ -24,7 +24,7 @@ const Login = () => {
     return newErrors;
   };
 
-   const submitHandler = async (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
     const validationErrors = validate();
 
@@ -35,19 +35,26 @@ const Login = () => {
           password: data.password,
         });
         if (response.data.success) {
-        // Save token and role in localStorage
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('role', response.data.role); // Store user role
+          // Save token, role, and profile data in localStorage
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('role', response.data.role); // Store user role
+          localStorage.setItem('userName', response.data.userName); // Store username
+          localStorage.setItem('userId', response.data.userId); // Store user ID
+          localStorage.setItem('userEmail', response.data.userEmail); // Store email
+          localStorage.setItem('userPhone', response.data.userPhone); // Store phone number
+          localStorage.setItem('userClubs', JSON.stringify(response.data.userClubs)); // Store clubs
+          localStorage.setItem('userEvents', JSON.stringify(response.data.userEvents)); // Store events
+          localStorage.setItem('userResources', JSON.stringify(response.data.userResources)); // Store shared resources
 
-        // Redirect based on role
-        if (response.data.role === 'Member') {
-          navigate('/dashboard');
-        } else if (response.data.role === 'Admin') {
-          navigate('/admin-dashboard');
+          // Redirect based on role
+          if (response.data.role === 'Member') {
+            navigate('/dashboard');
+          } else if (response.data.role === 'Admin') {
+            navigate('/admin-dashboard');
+          } else {
+            setErrors('Invalid user role.');
+          }
         } else {
-          setErrors('Invalid user role.');
-        }
-      } else {
           toast.error(response.data.message || "Login failed.");
         }
       } catch (error) {

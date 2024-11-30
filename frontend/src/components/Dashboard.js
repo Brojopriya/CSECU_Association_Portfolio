@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Dashboard.css'; // Assuming your CSS will be in this file
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -28,15 +29,41 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <button onClick={handleViewClubs}>View All Clubs</button>
-      <button onClick={handleViewEvents}>View All Events</button>
-      <button onClick={handleViewResources}>View All Resources</button>
+    <div className="dashboard-container">
+      {/* Top-right Buttons (Logout & Delete Account) */}
+      <div className="top-right-buttons">
+        <button className="btn btn-danger" onClick={handleDeleteAccount}>
+          Delete Account
+        </button>
+        <button className="btn btn-warning" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
 
-      {/* Actions */}
-      <button onClick={handleDeleteAccount}>Delete Account</button>
-      <button onClick={handleLogout}>Logout</button>
+      {/* Profile Section */}
+      <div className="profile-section">
+        <div className="profile-info">
+          <div className="user-details">
+            <h2 className="username">CSECU</h2>
+            <p className="user-role">ASSOCIATION</p>
+            <button className="btn btn-info">Edit Profile</button>
+          </div>
+        </div>
+      </div>
+
+      <h1 className="dashboard-title">Welcome to the digital frontier – it’s time to explore</h1>
+
+      <div className="button-group">
+        <div className="card">
+          <button className="btn btn-primary" onClick={handleViewClubs}>View All Clubs</button>
+        </div>
+        <div className="card">
+          <button className="btn btn-secondary" onClick={handleViewEvents}>View All Events</button>
+        </div>
+        <div className="card">
+          <button className="btn btn-success" onClick={handleViewResources}>View All Resources</button>
+        </div>
+      </div>
     </div>
   );
 };

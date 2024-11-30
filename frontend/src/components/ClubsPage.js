@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importing useNavigate hook
 import axios from 'axios';
-import './ClubsPage.css';  // Ensure you have the updated styles
+import './ClubsPage.css';
 
 const ClubsPage = () => {
   const [clubs, setClubs] = useState([]);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();  // Initialize the navigate function
 
   useEffect(() => {
     // Fetch the clubs
@@ -26,6 +28,11 @@ const ClubsPage = () => {
       });
   }, []);
 
+  // Handle the exploration of a club
+  const handleExplore = (clubId) => {
+    navigate(`/clubs/${clubId}`);  // Navigate to the ClubDetailsPage for the selected club
+  };
+
   return (
     <div className="clubs-page">
       <h1 className="page-title">Our Clubs</h1>
@@ -42,11 +49,17 @@ const ClubsPage = () => {
           {clubs.map((club) => (
             <div className="club-card" key={club.club_id}>
               <div className="club-header">
+                {club.photo ? (
+                  <img src={`http://localhost:8000/${club.photo}`} alt={club.club_name} className="club-image" />
+                ) : (
+                  <div className="club-image-placeholder">No Image</div>
+                )}
                 <h3 className="club-name">{club.club_name}</h3>
               </div>
               <p className="club-description">{club.description}</p>
-              {/* Optionally, you can add icons, links, or more details */}
-              <button className="join-btn">EXPLORE</button>
+              <button className="explore-btn" onClick={() => handleExplore(club.club_id)}>
+                EXPLORE
+              </button>
             </div>
           ))}
         </div>

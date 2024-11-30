@@ -1,24 +1,89 @@
+/* Container for the entire event page */
 .event-page {
-  padding: 20px;
+  padding: 40px;
+  background: linear-gradient(to bottom, #45b8b6, #6fc0df);
+  font-family: 'Roboto', sans-serif;
 }
 
+/* Title of the page */
 .page-title {
-  color: #045a5a;
-  padding: 20px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  color: #015a5a;
+  font-size: 32px;
+  padding: 15px 25px;
+  background-color: #ccfff8;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Individual event card style */
 .event-card {
   border: 1px solid #035f5f;
-  padding: 20px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #c4efef;
+  padding: 25px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Event card hover effect */
+.event-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Title within event card */
+.event-card .event-title {
+  font-size: 24px;
+  color: #045a5a;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+/* Description within event card */
+.event-card .event-description {
+  color: #4b4b4b;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+/* Link to event details with hover effects */
 .details-link {
   text-decoration: none;
-  color: #007bff;
-  margin-top: 10px;
+  color: #e8f0ef;
+  background-color: #157466;
+  font-weight: bold;
+  font-size: 18px;
   display: inline-block;
+  margin-top: 15px;
+  border-radius: 8px;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect for the link */
+.details-link:hover {
+  background-color: #033259;
+  color: #ffffff;
+}
+
+/* Responsive design: Ensure the event cards are stacked properly on mobile devices */
+@media (max-width: 768px) {
+  .event-card {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    padding: 10px;
+  }
+
+  .details-link {
+    font-size: 16px;
+  }
 }
