@@ -46,7 +46,7 @@ const Dashboard = () => {
           <div className="user-details">
             <h2 className="username">CSECU</h2>
             <p className="user-role">ASSOCIATION</p>
-            <button className="btn btn-info">Edit Profile</button>
+            <button className="btn btn-info">member</button>
           </div>
         </div>
       </div>

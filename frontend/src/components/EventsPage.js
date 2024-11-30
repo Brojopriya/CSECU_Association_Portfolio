@@ -45,9 +45,13 @@ const EventPage = () => {
                 <h3 className="event-name">{event.event_name}</h3>
               </div>
               <p className="event-description">{event.description}</p>
-              <Link to={`/events/${event.event_id}`} className="details-link">
+              {/* Button for Interested */}
+              <button
+                className="interest-button"
+                onClick={() => window.location.href = `/events/${event.event_id}`} // Redirect to the event details page
+              >
                 Interested
-              </Link>
+              </button>
             </div>
           ))}
         </div>
