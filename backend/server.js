@@ -353,6 +353,7 @@ app.post('/register/:eventId', authenticateJWT, (req, res) => {
   const checkRegistrationQuery = 'SELECT * FROM Registrations WHERE user_id = ? AND event_id = ?';
   db.query(checkRegistrationQuery, [userId, eventId], (err, results) => {
     if (err) {
+      console.error('Database query error:', err); // Log the actual error
       return res.status(500).json({ success: false, message: 'Database query error.' });
     }
 
@@ -364,13 +365,13 @@ app.post('/register/:eventId', authenticateJWT, (req, res) => {
     const registerQuery = 'INSERT INTO Registrations (user_id, event_id) VALUES (?, ?)';
     db.query(registerQuery, [userId, eventId], (err, result) => {
       if (err) {
+        console.error('Error registering for event:', err); // Log the actual error
         return res.status(500).json({ success: false, message: 'Error registering for event.' });
       }
       res.json({ success: true, message: 'Successfully registered for the event!' });
     });
   });
 });
-
 
 app.post("/create-club", authenticateJWT, (req, res) => {
   console.log("Create Club Endpoint Hit"); // Debugging log

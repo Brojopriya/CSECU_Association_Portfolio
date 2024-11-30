@@ -9,6 +9,7 @@ const EventDetails = () => {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
+  const [hasRegistered, setHasRegistered] = useState(false); // Track if user has already registered for the event
 
   useEffect(() => {
     // Fetch event details from the backend
@@ -29,9 +30,33 @@ const EventDetails = () => {
       });
   }, [eventId]);
 
-  const handleRegister = () => {
-    // Simulate registration (you can enhance this with an API call)
-    alert(`Successfully registered for ${event?.event_name}!`);
+  const handleRegister = async () => {
+    setLoading(true);
+    setMessage(''); // Clear any previous messages
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/register/${eventId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Get token from localStorage
+          },
+        }
+      );
+
+      if (response.data.success) {
+        setHasRegistered(true); // Mark as registered
+        setMessage(`Successfully registered for ${event?.event_name}!`);
+      } else {
+        setMessage(response.data.message);
+      }
+    } catch (error) {
+      console.error('Error registering for the event:', error);
+      setMessage('You are already registered for this event');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) return <p>Loading event details...</p>;
@@ -84,9 +109,13 @@ const EventDetails = () => {
           </div>
 
           {/* Registration Button */}
-          <button onClick={handleRegister} className="register-btn">
-            Register for Event
-          </button>
+          {!hasRegistered ? (
+            <button onClick={handleRegister} className="register-btn">
+              Register for Event
+            </button>
+          ) : (
+            <p>You are already registered for this event!</p>
+          )}
         </div>
       )}
     </div>
