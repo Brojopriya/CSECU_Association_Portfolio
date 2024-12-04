@@ -1,0 +1,40 @@
+.club-details-page {
+  padding: 20px;
+}
+
+.club-details-container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.club-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.club-description,
+.club-start-date,
+.club-members {
+  margin: 10px 0;
+}
+
+.members-header {
+  margin-top: 30px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.members-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.member-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.error-message {
+  color: red;
+}

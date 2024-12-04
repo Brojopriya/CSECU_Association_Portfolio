@@ -1,0 +1,49 @@
+.admin-clubs-page {
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.create-club-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.create-club-btn:hover {
+  background-color: #0056b3;
+}
+
+.club-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.club-item {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.club-info h3 {
+  margin: 0 0 10px;
+}
+
+.view-details-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.view-details-btn:hover {
+  background-color: #218838;
+}

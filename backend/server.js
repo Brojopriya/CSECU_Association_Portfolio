@@ -9,12 +9,15 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const path = require('path'); 
 const sanitizeFilename = (filename) => path.basename(filename);
+const fs = require('fs');
 
 
 
 const app = express();
-app.use(cors());
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
@@ -202,123 +205,77 @@ app.get('/events/all', (req, res) => {
 // Get All Resources
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads'); // Directory where files will be stored
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Generate a unique file name
-  },
+    destination: (req, file, cb) => {
+        cb(null, './uploads'); // Save files to the 'uploads' folder
+    },
+    filename: (req, file, cb) => {
+        const username = req.body.username; // Ensure 'username' is passed in the request body
+        const uniqueName = `${username}-${Date.now()}${path.extname(file.originalname)}`;
+        cb(null, uniqueName);
+    }
 });
 
 const upload = multer({ storage });
 
-// API Endpoints
+// Routes
 
-// 1. Fetch All Resources
-app.get('/resources/all', (req, res) => {
-  const query = `
-    SELECT 
-      resource_id, 
-      user_id, 
-      title, 
-      type, 
-      upload_date, 
-      file_path, 
-      description 
-    FROM Resource
-  `;
-
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Database query error:', err.message);
-      return res.status(500).json({ success: false, message: 'Database query error.' });
-    }
-
-    res.status(200).json({
-      success: true,
-      resources: results.map((resource) => ({
-        ...resource,
-        file_url: `http://localhost:${PORT}/uploads/${path.basename(resource.file_path)}`,
-      })),
-    });
-  });
-});
-
-// 2. Upload a New Resource
+// Upload a New Resource
 app.post('/resources/upload', upload.single('file'), (req, res) => {
-  const { title, description, user_id } = req.body;
+    const { user_id, title, description, username } = req.body;
 
-  if (!req.file || !title || !user_id) {
-    return res.status(400).json({ success: false, message: 'Missing required fields or file.' });
-  }
-
-  const filePath = `uploads/${req.file.filename}`;
-  const fileType = req.file.mimetype;
-
-  const query = `
-    INSERT INTO Resource (user_id, title, type, file_path, description, upload_date)
-    VALUES (?, ?, ?, ?, ?, NOW())
-  `;
-  const values = [user_id, title, fileType, filePath, description];
-
-  db.query(query, values, (err, result) => {
-    if (err) {
-      console.error('Database insertion error:', err.message);
-      return res.status(500).json({ success: false, message: 'Failed to save the resource.' });
+    if (!req.file || !title || !user_id) {
+        return res.status(400).json({ message: 'Missing required fields.' });
     }
 
-    res.status(201).json({
-      success: true,
-      message: 'Resource uploaded successfully.',
-      resource: {
-        resource_id: result.insertId,
-        user_id,
-        title,
-        type: fileType,
-        file_url: `http://localhost:${PORT}/${filePath}`,
-        description,
-        upload_date: new Date().toISOString(),
-      },
+    const filePath = req.file.path;
+    const fileType = path.extname(req.file.originalname);
+
+    const query = `
+        INSERT INTO Resource (user_id, title, type, file_path, description)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+    const values = [user_id, title, fileType, filePath, description || ''];
+
+    db.query(query, values, (err, results) => {
+        if (err) {
+            console.error('Database insert error:', err);
+            return res.status(500).json({ message: 'Failed to upload resource.' });
+        }
+
+        res.status(200).json({
+            success: true,
+            resource: {
+                resource_id: results.insertId,
+                user_id,
+                title,
+                type: fileType,
+                file_path: filePath,
+                description,
+                upload_date: new Date()
+            }
+        });
     });
-  });
 });
 
-// 3. Download a Resource (Optional
-// Download a Resource
-// Download a Resource
-app.get('/resources/download/:filename', (req, res) => {
-  const { filename } = req.params;
+// Get All Resources
+app.get('/resources/all', (req, res) => {
+    const query = `SELECT * FROM Resource ORDER BY upload_date DESC`;
 
-  // Query the database to fetch the file path from the 'Resource' table
-  const query = 'SELECT file_path FROM Resource WHERE file_path LIKE ?';
-  db.query(query, [`%${filename}`], (err, results) => {
-    if (err) {
-      console.error('Database query error:', err.message);
-      return res.status(500).json({ success: false, message: 'Error fetching file details from the database.' });
-    }
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Database fetch error:', err);
+            return res.status(500).json({ message: 'Failed to fetch resources.' });
+        }
 
-    if (results.length === 0) {
-      return res.status(404).json({ success: false, message: 'File not found in the database.' });
-    }
+        // Construct full URLs for files
+        const resources = results.map((resource) => ({
+            ...resource,
+            file_url: `http://localhost:8000/${resource.file_path.replace(/\\/g, '/')}` // Replace backslashes with forward slashes for Windows compatibility
+        }));
 
-    // Get the relative file path from the database
-    const filePath = path.join(__dirname, results[0].file_path);
-
-    // Check if the file exists
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ success: false, message: 'File not found on the server.' });
-    }
-
-    // Serve the file for download
-    res.download(filePath, filename, (err) => {
-      if (err) {
-        console.error('Error downloading the file:', err.message);
-        return res.status(500).json({ success: false, message: 'Error while downloading the file.' });
-      }
+        res.status(200).json({ success: true, resources });
     });
-  });
 });
-
 
 
 // Get Event Details
