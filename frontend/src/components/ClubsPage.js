@@ -49,8 +49,12 @@ const ClubsPage = () => {
           {clubs.map((club) => (
             <div className="club-card" key={club.club_id}>
               <div className="club-header">
-                {club.photo ? (
-                  <img src={`http://localhost:8000/${club.photo}`} alt={club.club_name} className="club-image" />
+                {club.profile_photo ? (
+                  <img 
+                    src={`http://localhost:8000/${club.profile_photo}`} 
+                    alt={club.club_name} 
+                    className="club-image" 
+                  />
                 ) : (
                   <div className="club-image-placeholder">No Image</div>
                 )}

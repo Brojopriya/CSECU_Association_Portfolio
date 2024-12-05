@@ -6,22 +6,43 @@ function CreateClub() {
   const [clubData, setClubData] = useState({
     club_name: "",
     description: "",
-    creation_date: ""
+    creation_date: "",
+    profile_photo: null,      // Profile photo
+    additional_photo: null,   // Additional photo
+    video: null                // Video file
   });
 
+  // Handle input changes for text and file inputs
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setClubData({ ...clubData, [name]: value });
+    const { name, value, files } = e.target;
+
+    if (name === "profile_photo" || name === "additional_photo" || name === "video") {
+      // If it's a file input, store the file in the state
+      setClubData({ ...clubData, [name]: files[0] });
+    } else {
+      setClubData({ ...clubData, [name]: value });
+    }
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append("club_name", clubData.club_name);
+    formData.append("description", clubData.description);
+    formData.append("creation_date", clubData.creation_date);
+    
+    // Append the files to the FormData object if they exist
+    if (clubData.profile_photo) formData.append("profile_photo", clubData.profile_photo);
+    if (clubData.additional_photo) formData.append("additional_photo", clubData.additional_photo);
+    if (clubData.video) formData.append("video", clubData.video);
+
     try {
-      const response = await axios.post("http://localhost:8000/create-club", clubData, {
+      const response = await axios.post("http://localhost:8000/create-club", formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
-          'Content-Type': 'application/json', // Set content type for JSON data
+          'Content-Type': 'multipart/form-data', // Specify content type for file uploads
         },
       });
       alert(response.data.message);
@@ -66,6 +87,39 @@ function CreateClub() {
             value={clubData.creation_date}
             onChange={handleChange}
             required
+          />
+        </div>
+
+        {/* Profile photo input */}
+        <div className="form-group">
+          <label>Profile Photo</label>
+          <input
+            name="profile_photo"
+            type="file"
+            accept="image/*"
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Additional photo input */}
+        <div className="form-group">
+          <label>Additional Photo</label>
+          <input
+            name="additional_photo"
+            type="file"
+            accept="image/*"
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* Video file input */}
+        <div className="form-group">
+          <label>Club Introduction Video</label>
+          <input
+            name="video"
+            type="file"
+            accept="video/*"
+            onChange={handleChange}
           />
         </div>
 

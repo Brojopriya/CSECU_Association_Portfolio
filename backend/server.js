@@ -178,7 +178,7 @@ app.get('/dashboard', authenticateJWT, (req, res) => {
 
 // Get All Clubs
 app.get('/clubs/all', (req, res) => {
-  const query = 'SELECT * FROM Club';
+  const query = 'SELECT club_id, club_name, description, profile_photo FROM Club'; // Ensure profile_photo is selected
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).json({ success: false, message: 'Error fetching clubs' });
@@ -186,6 +186,7 @@ app.get('/clubs/all', (req, res) => {
     res.json({ clubs: results });
   });
 });
+
 
 // Get All Events
 app.get('/events/all', (req, res) => {
@@ -349,28 +350,45 @@ app.post('/register/:eventId', authenticateJWT, (req, res) => {
   });
 });
 
-app.post("/create-club", authenticateJWT, (req, res) => {
-  console.log("Create Club Endpoint Hit"); // Debugging log
+
+
+app.post("/create-club", authenticateJWT, upload.fields([
+  { name: "profile_photo", maxCount: 1 },
+  { name: "additional_photo", maxCount: 1 },
+  { name: "video", maxCount: 1 }
+]), (req, res) => {
+  console.log("Create Club Endpoint Hit");
   console.log("Request User:", req.user); // User details from JWT
   console.log("Request Body:", req.body); // Data sent from frontend
 
+  // Check if the user has Admin role
   if (req.user.role !== "Admin") {
     console.log("Access Denied: User Role is not Admin");
     return res.status(403).json({ error: "Access denied" });
   }
 
   const { club_name, description, creation_date } = req.body;
+
+  // Prepare file paths
+  let profile_photo = req.files["profile_photo"] ? req.files["profile_photo"][0].path : null;
+  let additional_photo = req.files["additional_photo"] ? req.files["additional_photo"][0].path : null;
+  let video = req.files["video"] ? req.files["video"][0].path : null;
+
+  // Insert the club data into the database
   const query =
-    "INSERT INTO Club (club_name, description, creation_date, user_id) VALUES (?, ?, ?, ?)";
-  db.query(query, [club_name, description, creation_date, req.user.user_id], (err) => {
+    "INSERT INTO Club (club_name, description, creation_date, user_id, profile_photo, additional_photo, video) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  
+  db.query(query, [club_name, description, creation_date, req.user.user_id, profile_photo, additional_photo, video], (err) => {
     if (err) {
-      console.error("Database Error:", err); // Log database error
+      console.error("Database Error:", err);
       return res.status(500).json({ error: "Failed to create club" });
     }
-    console.log("Club Created Successfully"); // Success log
+
+    console.log("Club Created Successfully");
     res.status(201).json({ message: "Club created successfully" });
   });
 });
+
 
 
 // Create Event
@@ -416,25 +434,40 @@ app.post("/create-event", authenticateJWT, (req, res) => {
 
 //club de
 app.get('/clubs/:clubId', (req, res) => {
-  const clubId = req.params.clubId;
-  const query = 'SELECT * FROM Club WHERE club_id = ?';
+  const { clubId } = req.params;
   
+  // Query to get the basic club details
+  const query = `
+    SELECT club_id, club_name, description, creation_date, profile_photo
+    FROM Club
+    WHERE club_id = ?
+  `;
+
+  // Query the database to fetch club details by clubId
   db.query(query, [clubId], (err, results) => {
     if (err) {
+      console.error('Database error:', err);
       return res.status(500).json({ success: false, message: 'Error fetching club details' });
     }
+
     if (results.length === 0) {
       return res.status(404).json({ success: false, message: 'Club not found' });
     }
+
     const club = results[0];
-    
-    // Get the total number of members
+
+    // Query to count the total number of members in the 'Members' table
     const membersQuery = 'SELECT COUNT(*) AS total_members FROM Members WHERE club_id = ?';
     db.query(membersQuery, [clubId], (err, memberResults) => {
       if (err) {
+        console.error('Error fetching member count:', err);
         return res.status(500).json({ success: false, message: 'Error fetching member count' });
       }
+
+      // Update the club object with the total member count
       club.total_members = memberResults[0].total_members;
+
+      // Respond with the full club details, including the total members count
       res.json({ club });
     });
   });
