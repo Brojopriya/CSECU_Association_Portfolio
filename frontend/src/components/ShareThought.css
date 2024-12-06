@@ -1,117 +1,206 @@
-/* ShareThought.css */
-
-/* General styling for the container */
+/* Container for both sections */
 .container {
-  width: 80%;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: #ceeaf6;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Heading styles */
-.heading {
-  font-size: 2rem;
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Message for errors or success */
-.message {
-  color: red;
-  text-align: center;
-  font-size: 1rem;
-  margin-bottom: 20px;
-}
-
-/* Form styling */
-.thought-form {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: rgb(236, 211, 174);
+  justify-content: space-between;
   padding: 20px;
+  gap: 20px;
+  background-color: #cfefdd;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.thought-textarea {
-  width: 100%;
-  padding: 10px;
+/* Left Side: All Thoughts */
+/* Left Side: All Thoughts */
+.left-column {
+  flex: 2; /* Takes up 50% of the space */
+  padding-right: 20px;
+  border-right: 2px solid #ccc;
+  background-color: rgb(169, 194, 210);
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  max-height: 80vh; /* Set maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Custom scrollbar styling */
+.left-column::-webkit-scrollbar {
+  width: 8px; /* Set scrollbar width */
+}
+
+.left-column::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scrollbar color */
+  border-radius: 4px; /* Rounded scrollbar */
+}
+
+.left-column::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Scrollbar color on hover */
+}
+
+.thoughts-heading {
+  font-size: 24px;
   margin-bottom: 20px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  resize: vertical;
-  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
 }
 
-.file-upload {
+.search-container {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.file-input {
-  padding: 5px;
-  font-size: 1rem;
+.search-input {
+  padding: 10px;
+  width: 200px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  font-size: 14px;
 }
 
-.submit-btn {
-  padding: 10px 20px;
-  font-size: 1rem;
+.search-btn {
+  padding: 10px;
+  background-color: #4c6cd3;
   color: white;
-  background-color: #007bff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 9px;
 }
 
-.submit-btn:disabled {
-  background-color: #d6d6d6;
-  cursor: not-allowed;
-}
-
-.submit-btn:hover {
+.search-btn:hover {
   background-color: #0056b3;
 }
 
-/* Styling for the thoughts section */
-.thoughts-heading {
-  font-size: 1.5rem;
-  color: #333;
-  margin-top: 30px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
 .thought-card {
-  background-color: #b1e29f;
+  border: 1px solid #ddd;
   padding: 15px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  background-color: #e1deda;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.thought-card p {
-  font-size: 1rem;
-  color: #333;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .thought-media {
-  width: 100%;
-  max-width: 300px;
+  max-width: 100%;
+  height: auto;
   margin-top: 10px;
   border-radius: 8px;
 }
 
 .no-thoughts {
   text-align: center;
-  font-size: 1.2rem;
-  color: #888;
+  color: #777;
+}
+
+/* Right Side: Share Thought */
+.right-column {
+  flex: 1; /* Takes up 50% of the space */
+  padding-left: 20px;
+  background-color: rgb(228, 220, 207);
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.heading {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.thought-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.thought-textarea {
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.file-upload {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.file-input {
+  padding: 5px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.submit-btn {
+  padding: 12px;
+  background-color: #03a45e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.submit-btn:disabled {
+  background-color: #ccc;
+}
+
+.message {
+  color: green;
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.no-thoughts {
+  text-align: center;
+  color: #777;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .left-column,
+  .right-column {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .preview {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.thought-preview {
+  max-width: 100px;
+  max-height: 100px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
 }

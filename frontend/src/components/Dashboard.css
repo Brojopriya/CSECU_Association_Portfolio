@@ -64,7 +64,7 @@
   font-size: 2rem;
   font-weight: bold;
   text-align: center;
-  background-color: #c5e6b4; /* Highlighted welcome message */
+  background-color: #227304; /* Highlighted welcome message */
   padding: 20px;
   border-radius: 8px;
 }
@@ -73,6 +73,7 @@
    /* Adjusted margin to provide space for the logo and caption */
   font-size: 1.8rem;
   color: rgb(1, 6, 46);
+  background-color: #c5e6b4;
  
 }
 

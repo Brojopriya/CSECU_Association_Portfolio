@@ -547,49 +547,45 @@ app.post('/club/join', authenticateJWT, (req, res) => {
 
 // Endpoint to share a new thought with an optional photo/video
 
-app.post('/share-thought', authenticateJWT, upload.fields([{ name: 'photo', maxCount: 1 }, { name: 'video', maxCount: 1 }]), (req, res) => {
+app.post("/share-thought", authenticateJWT, upload.fields([{ name: "photo", maxCount: 1 }, { name: "video", maxCount: 1 }]), (req, res) => {
   const { thought } = req.body;
-  const { userId } = req.user;  // Assuming the JWT contains the userId
-  const photoPath = req.files['photo'] ? req.files['photo'][0].path : null;
-  const videoPath = req.files['video'] ? req.files['video'][0].path : null;
+  const user_id = req.user.user_id;
+  const photo = req.files["photo"] ? req.files["photo"][0].path : null;
+  const video = req.files["video"] ? req.files["video"][0].path : null;
 
   if (!thought) {
-    return res.status(400).json({ error: 'Thought content is required.' });
+    return res.status(400).json({ error: "Thought is required" });
   }
 
-  console.log('Received thought:', thought);
-  console.log('Photo Path:', photoPath);
-  console.log('Video Path:', videoPath);
-
-  // Insert the thought into the database
-  const query = 'INSERT INTO thoughts (user_id, thought, photo, video) VALUES (?, ?, ?, ?)';
-  db.query(query, [userId, thought, photoPath, videoPath], (err, results) => {
+  const query = `INSERT INTO thoughts (user_id, thought, photo, video) VALUES (?, ?, ?, ?)`;
+  db.query(query, [user_id, thought, photo, video], (err, result) => {
     if (err) {
-      console.error('Database error:', err);
-      return res.status(500).json({ error: 'Failed to share your thought. Please try again later.' });
+      console.error("Error inserting thought:", err);
+      return res.status(500).json({ error: "Failed to share your thought." });
     }
-    res.status(201).json({ message: 'Thought shared successfully!' });
+    res.status(200).json({ message: "Thought shared successfully!" });
   });
 });
 
 // Route to fetch all thoughts
-app.get('/thoughts', (req, res) => {
+// Route to fetch all thoughts along with user name
+app.get("/thoughts", (req, res) => {
   const query = `
-    SELECT thoughts.id, thoughts.thought, thoughts.photo, thoughts.video, thoughts.created_at, user.name
-    FROM thoughts
-    JOIN user ON thoughts.user_id = user.user_id
-    ORDER BY thoughts.created_at DESC
+    SELECT thoughts.id, thoughts.thought, thoughts.photo, thoughts.video, user.name 
+    FROM thoughts 
+    INNER JOIN user ON thoughts.user_id = user.user_id
   `;
-  
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Error fetching thoughts:', err);
-      return res.status(500).json({ error: 'Failed to fetch thoughts.' });
+      console.error("Error fetching thoughts:", err);
+      return res.status(500).json({ error: "Failed to load thoughts." });
     }
     res.status(200).json({ thoughts: results });
   });
 });
 
+
+//
 app.get("/users", authenticateJWT, (req, res) => {
   const query = "SELECT * FROM user";
   db.query(query, (err, results) => {
