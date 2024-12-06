@@ -14,7 +14,9 @@ import EventDetails from './components/EventDetails';
 import ResourcesPage from './components/ResourcesPage';
 import DeleteAccountPage from './components/DeleteAccountPage';
 import LogoutPage from './components/LogoutPage';
-import ClubDetailsPage from './components/ClubDetailsPage';  // Import ClubDetailsPage
+import ClubDetailsPage from './components/ClubDetailsPage';
+import ShareThought from './components/ShareThought';
+import AllUsers from './components/AllUsers';  // Import ShareThought component
 
 function App() {
   return (
@@ -27,7 +29,6 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/clubs" element={<ClubsPage />} />
-        {/* Use the correct element prop to pass ClubDetailsPage */}
         <Route path="/clubs/:clubId" element={<ClubDetailsPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/create-club" element={<CreateClub />} />
@@ -36,6 +37,9 @@ function App() {
         <Route path="/resources" element={<ResourcesPage />} />
         <Route path="/delete-account" element={<DeleteAccountPage />} />
         <Route path="/logout" element={<LogoutPage />} />
+        <Route path="/share-thought" element={<ShareThought />} />  {/* Add ShareThought route */}
+        <Route path="/all-users" element={<AllUsers />} />
+
       </Routes>
     </Router>
   );

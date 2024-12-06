@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Dashboard.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -8,39 +8,66 @@ const Dashboard = () => {
   // State to store user details
   const [userDetails, setUserDetails] = useState(null);
 
-  // Fetch user details from localStorage
+  // Fetch user details from the backend on component mount
   useEffect(() => {
-    const storedUserDetails = JSON.parse(localStorage.getItem('userDetails'));
-    if (storedUserDetails) {
-      setUserDetails(storedUserDetails);
+    const token = localStorage.getItem("token"); // Get token from localStorage
+
+    if (token) {
+      // Fetch user details from backend
+      fetch("http://localhost:8000/dashboard", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`, // Send token in Authorization header
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json(); // Parse JSON response
+          } else {
+            throw new Error("Failed to fetch user details");
+          }
+        })
+        .then((data) => {
+          if (data.success) {
+            setUserDetails(data.userDetails); // Save user details to state
+          } else {
+            console.error(data.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user details:", error);
+          navigate("/login"); // Redirect to login if token is invalid or request fails
+        });
+    } else {
+      navigate("/login"); // Redirect to login if no token is found
     }
-  }, []);
+  }, [navigate]);
 
   // Button navigation handlers
-  const handleViewClubs = () => navigate('/clubs');
-  const handleViewEvents = () => navigate('/events');
-  const handleViewResources = () => navigate('/resources');
-  const handleDeleteAccount = () => navigate('/delete-account');
+  const handleViewClubs = () => navigate("/clubs");
+  const handleViewEvents = () => navigate("/events");
+  const handleViewResources = () => navigate("/resources");
+  const handleDeleteAccount = () => navigate("/delete-account");
   const handleLogout = () => {
-    localStorage.removeItem('userDetails');
-    navigate('/logout');
+    localStorage.removeItem("token"); // Clear token from localStorage
+    localStorage.removeItem("userDetails"); // Clear user details
+    navigate("/login"); // Redirect to login
   };
+  const handleShareThoughts = () => navigate("/share-thought");
 
   return (
     <div className="dashboard-container">
       {/* Logo on the top-left corner */}
       <img src="/logo1.png" alt="Logo" className="logo-img" />
-<p className="logo-caption">University of Chittagong</p> {/* Caption below the logo */}
-      
-      {/* Top-right: Profile section with user details, logout, and delete account */}
+      <p className="logo-caption">University of Chittagong</p>
+
+      {/* Profile Section */}
       <div className="profile-section">
         {userDetails ? (
           <div className="profile-info">
-            <div className="user-details">
-              <h2 className="username">{userDetails.name}</h2>
-              <p className="user-role">{userDetails.role}</p>
-              <button className="btn btn-info">View Profile</button>
-            </div>
+            <h className="userName">{userDetails.userName}</h>
+            <p className="user-id">ID: {userDetails.userId}</p>
+            <p className="user-role"> {userDetails.userRole}</p>
           </div>
         ) : (
           <p>Loading user details...</p>
@@ -57,15 +84,15 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Highlighted Welcome Message */}
+      {/* Welcome Message */}
       <h1 className="dashboard-title">
-       <span className="highlight">CSECU ASSOCIATION</span> 
+        <span className="highlight">CSECU ASSOCIATION</span>
       </h1>
-            <h2 className="dashboard-title1">
+      <h2 className="dashboard-title1">
         Welcome to the <span className="highlight">Digital Frontier</span> – it’s time to explore
       </h2>
 
-      {/* Dynamic Button Group with Images */}
+      {/* Dynamic Button Group */}
       <div className="button-group">
         <div className="card" onClick={handleViewClubs}>
           <img src="/club.jpg" alt="Clubs" className="card-img" />
@@ -83,6 +110,13 @@ const Dashboard = () => {
           <img src="/re.jpg" alt="Resources" className="card-img" />
           <div className="card-overlay">
             <button className="btn btn-success">View All Resources</button>
+          </div>
+        </div>
+        {/* Share Your Thoughts Button */}
+        <div className="card" onClick={handleShareThoughts}>
+          <img src="/share-thoughts.jpg" alt="Share Thoughts" className="card-img" />
+          <div className="card-overlay">
+            <button className="btn btn-info">Share Your Thoughts</button>
           </div>
         </div>
       </div>

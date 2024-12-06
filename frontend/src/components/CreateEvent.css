@@ -1,0 +1,125 @@
+/* Overall Page Styles */
+.create-event-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full screen height */
+  background: linear-gradient(45deg, #f3f4f7, #dcdcdc); /* Light gradient background */
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Form Box Container (Compact and Clean) */
+.form-box {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 400px; /* Fixed width for compact form */
+  height: 500px; /* Set a fixed height to fit the screen */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  box-sizing: border-box;
+}
+
+/* Title Styling */
+h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Form Styles */
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between; /* Spacing between form fields */
+}
+
+/* Each form field's style */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+label {
+  font-size: 14px;
+  color: #555;
+  font-weight: bold;
+}
+
+input,
+textarea {
+  padding: 12px;
+  font-size: 14px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #5e72e4;
+}
+
+/* Resizing Textarea */
+textarea {
+  resize: none;
+  min-height: 50px; /* Adjust textarea height */
+}
+
+/* Submit Button Styling */
+button.submit-btn {
+  background-color: #5e72e4;
+  color: white;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button.submit-btn:hover {
+  background-color: #4e63c5;
+}
+
+button.submit-btn:active {
+  background-color: #3d51a0;
+  transform: scale(0.98);  /* Slight button scale effect on click */
+}
+
+/* Input Focus Styling */
+input:focus,
+textarea:focus {
+  border-color: #5e72e4;
+  box-shadow: 0 0 5px rgba(94, 114, 228, 0.3); /* Subtle glow effect */
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  .form-box {
+    width: 90%; /* Responsive width */
+    height: auto;
+    padding: 15px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  button.submit-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

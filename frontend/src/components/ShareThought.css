@@ -1,0 +1,117 @@
+/* ShareThought.css */
+
+/* General styling for the container */
+.container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #ceeaf6;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styles */
+.heading {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Message for errors or success */
+.message {
+  color: red;
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+/* Form styling */
+.thought-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(236, 211, 174);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.thought-textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  font-size: 1rem;
+}
+
+.file-upload {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.file-input {
+  padding: 5px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.submit-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:disabled {
+  background-color: #d6d6d6;
+  cursor: not-allowed;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the thoughts section */
+.thoughts-heading {
+  font-size: 1.5rem;
+  color: #333;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.thought-card {
+  background-color: #b1e29f;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.thought-card p {
+  font-size: 1rem;
+  color: #333;
+}
+
+.thought-media {
+  width: 100%;
+  max-width: 300px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.no-thoughts {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #888;
+}

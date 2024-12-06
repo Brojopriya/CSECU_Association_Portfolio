@@ -13,13 +13,13 @@
   position: absolute;
   top: 20px;
   left: 20px;
-  width: 120px; /* Adjusted logo size */
+  width: 110px; /* Adjusted logo size */
   height: auto;
 }
 
 .logo-caption {
   position: absolute;
-  top: 120px; /* Adjusted position of caption below logo */
+  top: 110px; /* Adjusted position of caption below logo */
   left:-80px;
   margin: 80px;
   font-size: 0.9rem;
@@ -32,23 +32,23 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  
+  
 }
 
 .user-details {
   margin-bottom: 10px;
 }
 
-.username {
+.user-id {
   font-size: 1.5rem;
   font-weight: bold;
+  color: rgb(15, 15, 15);
 }
 
 .user-role {
   font-size: 1rem;
-  color: gray;
+  color: rgb(52, 46, 46);
 }
 
 .top-right-buttons {
@@ -72,7 +72,7 @@
 .dashboard-title1 {
    /* Adjusted margin to provide space for the logo and caption */
   font-size: 1.8rem;
-  color: rgb(253, 252, 251);
+  color: rgb(1, 6, 46);
  
 }
 
@@ -84,45 +84,57 @@
   text-align: center;
 }
 
+/* Button group for the cards */
 .button-group {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 40px;
-  width: 80%; /* Adjust width to better fit the screen */
+  display: flex; /* Use flexbox for horizontal alignment */
+  gap: 20px; /* Add spacing between the cards */
+  justify-content: flex-start; /* Align cards to the left */
+  overflow-x: auto; /* Allow horizontal scrolling if cards exceed the viewport width */
+  padding: 10px;
 }
 
+/* Card styling */
 .card {
-  margin: 10px;
-  text-align: center;
+  flex-shrink: 0; /* Prevent cards from shrinking */
+  width: 200px; /* Set a fixed width for each card */
+  height: 200px; /* Set height equal to width for 1:1 aspect ratio */
   position: relative;
-  border-radius: 8px;
   overflow: hidden;
-  transition: transform 0.3s ease;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
-.card:hover {
-  transform: scale(1.05);
-}
-
+/* Image inside the card */
 .card-img {
   width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 8px;
+  height: 100%;
+  object-fit: cover; /* Ensure image covers the card area */
 }
 
-.card button {
-  margin-top: 10px;
-  font-size: 1rem;
-  text-transform: uppercase;
-  background: rgba(0, 123, 255, 0.8);
+/* Overlay for the card */
+.card-overlay {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
   color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  transition: background 0.3s ease;
 }
 
-.card button:hover {
-  background: rgba(0, 123, 255, 1);
+.card-overlay button {
+  width: 100%;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  background-color: rgba(0, 123, 255, 0.8);
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.card-overlay button:hover {
+  background-color: rgba(0, 123, 255, 1);
 }

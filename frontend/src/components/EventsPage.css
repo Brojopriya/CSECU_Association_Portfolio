@@ -8,6 +8,9 @@
   text-align: center;
   font-size: 36px;
   margin-bottom: 20px;
+  background: #088910;
+  border: 1px solid #390904;
+
 }
 
 .loading-container {
@@ -31,7 +34,7 @@
 }
 
 .event-card {
-  background: #e5efef;
+  background: #f4e0dc;
   border: 1px solid #04485e;
   border-radius: 8px;
   padding: 20px;

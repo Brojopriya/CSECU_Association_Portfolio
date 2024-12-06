@@ -66,24 +66,24 @@ body, html {
   font-size: clamp(3rem, 6vw, 5rem);
   font-weight: 700;
   margin: 0; /* Remove previous margin */
-  background: linear-gradient(135deg, #121111, #262726);
+  background: linear-gradient(135deg, #9ff884, #f0ad06);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  
   margin-bottom: 5px;
   text-shadow: 2px 2px 4px rgba(24, 24, 22, 0.8); /* Subtle text shadow for visibility */
   transition: color 0.3s ease; /* Smooth color transition */
-  color: #191918; /* Set the default color to black */
+  color: #f3f392; /* Set the default color to black */
 }
 
 .hero-title:hover {
-  color: #21201d; /* Change title color on hover */
-  -webkit-text-fill-color: #0e0e0d; /* Ensure the color change works with background clip */
+  color: #dfbd5a; /* Change title color on hover */
+  -webkit-text-fill-color: #d4d49e; /* Ensure the color change works with background clip */
 }
 
 /* Subtitle Section */
 .hero-subtitle {
   font-size: clamp(1.5rem, 3vw, 2.5rem);
-  color: #191818;
+  color: #f3d476;
   line-height: 1.6;
   text-shadow: 1px 1px 3px rgba(8, 8, 8, 0.8); /* Subtle text shadow */
 }
@@ -99,7 +99,7 @@ body, html {
 }
 
 .btn {
-  background: linear-gradient(135deg, #052048, #205648);
+  background: linear-gradient(135deg, #22ea68, #5fa7fa);
   color: rgb(14, 13, 13); /* Text color of the button */
   border: none;
   text-color: rgb(17, 17, 17); /* Text color on hover */

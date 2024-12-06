@@ -94,16 +94,24 @@ app.post('/login', (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid email or password' });
       }
 
-      // Generate JWT token
-      const token = jwt.sign({ user_id: results[0].user_id, role: results[0].role }, SECRET_KEY, {
-        expiresIn: '1h',
-      });
+      // Generate JWT token with additional details if needed
+      const token = jwt.sign(
+        { user_id: results[0].user_id, role: results[0].role, userName: results[0].name, userEmail: results[0].email },
+        SECRET_KEY,
+        { expiresIn: '1h' }
+      );
 
+      // Send the response with additional user details
       res.json({
         success: true,
         message: 'Login successful!',
         token: token,
+        user_id: results[0].user_id,
+        userName: results[0].name,
+        userEmail: results[0].email, // Ensure email is included
+        userPhone: results[0].phone, // Include phone if needed
         role: results[0].role
+        // Add other details as necessary (clubs, events, etc.)
       });
     });
   });
@@ -173,8 +181,21 @@ app.delete('/delete-account', authenticateJWT, (req, res) => {
 
 // Dashboard (Protected Route)
 app.get('/dashboard', authenticateJWT, (req, res) => {
-  res.json({ success: true, message: `Welcome to the dashboard, user ${req.user.user_id}` });
+  const { user_id, name, email, role } = req.user;
+
+  // Optionally fetch additional data like clubs, events, etc.
+  res.json({
+    success: true,
+    message: `Welcome to the dashboard, ${name}`,
+    userDetails: {
+      userId: user_id,
+      userName: name,
+      userEmail: email,
+      userRole: role,
+    }
+  });
 });
+
 
 // Get All Clubs
 app.get('/clubs/all', (req, res) => {
@@ -280,6 +301,7 @@ app.get('/resources/all', (req, res) => {
 
 
 // Get Event Details
+// Get event details
 app.get('/events/:eventId', (req, res) => {
   const eventId = req.params.eventId;
 
@@ -290,6 +312,7 @@ app.get('/events/:eventId', (req, res) => {
       Event.event_date, 
       Event.event_description, 
       Event.location, 
+      Event.cover_photo,
       Club.club_name
     FROM 
       Event 
@@ -311,46 +334,53 @@ app.get('/events/:eventId', (req, res) => {
       return res.status(404).json({ success: false, message: 'Event not found.' });
     }
 
-    // Format the event data
     const event = {
       ...results[0],
-      event_date: results[0].event_date ? new Date(results[0].event_date).toISOString().split('T')[0] : null, // Ensure proper date format
+      event_date: results[0].event_date ? new Date(results[0].event_date).toISOString().split('T')[0] : null,
     };
 
     res.json({ success: true, event });
   });
 });
 
-// Register for an Event
-app.post('/register/:eventId', authenticateJWT, (req, res) => {
+// Check if user is already registered for an event
+app.get('/check-registration/:eventId', authenticateJWT, (req, res) => {
   const userId = req.user.user_id;  // Get user ID from JWT token
   const eventId = req.params.eventId;  // Get event ID from URL
 
-  // Check if the user is already registered for the event
   const checkRegistrationQuery = 'SELECT * FROM Registrations WHERE user_id = ? AND event_id = ?';
+  
   db.query(checkRegistrationQuery, [userId, eventId], (err, results) => {
     if (err) {
-      console.error('Database query error:', err); // Log the actual error
+      console.error('Database query error:', err);
       return res.status(500).json({ success: false, message: 'Database query error.' });
     }
 
     if (results.length > 0) {
-      return res.status(400).json({ success: false, message: 'You are already registered for this event.' });
+      return res.status(200).json({ success: true }); // User already registered
+    } else {
+      return res.status(404).json({ success: false, message: 'Not registered yet.' }); // Not registered
     }
-
-    // Insert into Registrations table
-    const registerQuery = 'INSERT INTO Registrations (user_id, event_id) VALUES (?, ?)';
-    db.query(registerQuery, [userId, eventId], (err, result) => {
-      if (err) {
-        console.error('Error registering for event:', err); // Log the actual error
-        return res.status(500).json({ success: false, message: 'Error registering for event.' });
-      }
-      res.json({ success: true, message: 'Successfully registered for the event!' });
-    });
   });
 });
 
+// Register user for an event
+app.post('/register/:eventId', authenticateJWT, (req, res) => {
+  const userId = req.user.user_id;  // Get user ID from JWT token
+  const eventId = req.params.eventId;  // Get event ID from URL
 
+  // Insert into Registrations table
+  const registerQuery = 'INSERT INTO Registrations (user_id, event_id) VALUES (?, ?)';
+  
+  db.query(registerQuery, [userId, eventId], (err, result) => {
+    if (err) {
+      console.error('Error registering for event:', err); // Log the actual error
+      return res.status(500).json({ success: false, message: 'Error registering for event.' });
+    }
+    res.json({ success: true, message: 'Successfully registered for the event!' });
+  });
+});
+//club
 
 app.post("/create-club", authenticateJWT, upload.fields([
   { name: "profile_photo", maxCount: 1 },
@@ -389,7 +419,7 @@ app.post("/create-club", authenticateJWT, upload.fields([
   });
 });
 
-
+//admn
 
 // Create Event
 app.post("/create-event", authenticateJWT, (req, res) => {
@@ -429,7 +459,6 @@ app.post("/create-event", authenticateJWT, (req, res) => {
     });
   });
 });
-
 
 
 //club de
@@ -515,6 +544,62 @@ app.post('/club/join', authenticateJWT, (req, res) => {
   });
 });
 
+
+// Endpoint to share a new thought with an optional photo/video
+
+app.post('/share-thought', authenticateJWT, upload.fields([{ name: 'photo', maxCount: 1 }, { name: 'video', maxCount: 1 }]), (req, res) => {
+  const { thought } = req.body;
+  const { userId } = req.user;  // Assuming the JWT contains the userId
+  const photoPath = req.files['photo'] ? req.files['photo'][0].path : null;
+  const videoPath = req.files['video'] ? req.files['video'][0].path : null;
+
+  if (!thought) {
+    return res.status(400).json({ error: 'Thought content is required.' });
+  }
+
+  console.log('Received thought:', thought);
+  console.log('Photo Path:', photoPath);
+  console.log('Video Path:', videoPath);
+
+  // Insert the thought into the database
+  const query = 'INSERT INTO thoughts (user_id, thought, photo, video) VALUES (?, ?, ?, ?)';
+  db.query(query, [userId, thought, photoPath, videoPath], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ error: 'Failed to share your thought. Please try again later.' });
+    }
+    res.status(201).json({ message: 'Thought shared successfully!' });
+  });
+});
+
+// Route to fetch all thoughts
+app.get('/thoughts', (req, res) => {
+  const query = `
+    SELECT thoughts.id, thoughts.thought, thoughts.photo, thoughts.video, thoughts.created_at, user.name
+    FROM thoughts
+    JOIN user ON thoughts.user_id = user.user_id
+    ORDER BY thoughts.created_at DESC
+  `;
+  
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching thoughts:', err);
+      return res.status(500).json({ error: 'Failed to fetch thoughts.' });
+    }
+    res.status(200).json({ thoughts: results });
+  });
+});
+
+app.get("/users", authenticateJWT, (req, res) => {
+  const query = "SELECT * FROM user";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching users:", err);
+      return res.status(500).json({ error: "Failed to fetch users." });
+    }
+    res.status(200).json({ users: results });
+  });
+});
 
 
 // Server setup
