@@ -1,90 +1,150 @@
+/* General Page Styles */
 .club-details-page {
+  display: flex; /* Makes the layout side-by-side */
+  gap: 20px; /* Adds space between sections */
   padding: 20px;
-  max-width: 900px;
-  margin: 0 auto;
   font-family: Arial, sans-serif;
 }
 
 .club-details-container {
+  flex: 2; /* Main content takes 2 parts of the space */
   padding: 20px;
+  background-color: #efe2d1;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.club-name {
+  font-size: 20px; /* Increase the font size */
+  font-weight: bold; /* Make the text bold */
+  text-align: center; /* Center the text */
+  color: #131414; /* Add a standout color */
+  text-transform: uppercase; /* Optional: Make text uppercase */
+  margin-bottom: 20px; /* Add some spacing below the title */
+  padding: 10px; /* Add padding for better spacing */
+  background-color: #12b894; /* Optional: Add a subtle background color */
+  border: 2px solid #0f1010; /* Optional: Add a border */
+  border-radius: 8px; /* Add rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+
+.media-sidebar {
+  flex: 1; /* Media sidebar takes 1 part of the space */
+  max-height: 500px; /* Set height for the sidebar */
+  overflow-y: auto; /* Makes it scrollable if content overflows */
+  background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #fafafa;
-  
+  padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.club-name {
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
+.media-item {
   margin-bottom: 15px;
+  text-align: center;
 }
 
-.club-description {
-  font-size: 16px;
-  color: #555;
+.media-item img,
+.media-item video {
+  width: 100%; /* Scales to fit the container */
+  max-width: 120px; /* Fixed small size */
+  height: 80px; /* Consistent height */
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Description and Text Styling */
+.club-description,
+.club-start-date,
+.club-members,
+.club-about {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #3c3a3a;
   margin-bottom: 20px;
+  text-align: left;
 }
 
-.club-meta {
-  font-size: 16px;
-  color: #777;
-  margin-bottom: 20px;
-}
-
+/* Highlighted Labels */
 .club-meta strong {
+  font-weight: 600;
   color: #333;
 }
 
-.join-club-btn {
-  padding: 12px 25px;
-  background-color: #077e4f;
-  color: white;
+/* Button Styling */
+.join-btn,
+.thank-you-btn {
+  display: block; /* Ensures the button is treated as a block element */
+  margin: 20px auto; /* Centers the button horizontally */
+  padding: 12px 30px;
+  font-size: 18px;
+  color: #fff;
+  background-color: #00796b;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 18px;
-  display: block;
-  width: 100%;
-  margin-top: 30px;
+  transition: all 0.3s ease;
+  width: fit-content; /* Button size adapts to its content */
+  text-align: center; /* Ensures the text inside is centered */
 }
 
-.join-club-btn:hover {
-  background-color: #045a3e;
+.join-btn:hover {
+  background-color: #004d40;
 }
 
-.join-club-btn:disabled {
-  background-color: #ccc;
+.join-btn:disabled,
+.thank-you-btn {
+  background-color: #286f2c;
   cursor: not-allowed;
 }
-/* Add to ClubDetailsPage.css */
-.club-video {
-  margin: 20px 0;
+
+
+/* Error Message */
+.error-message {
+ 
+  color: #ebdfdd;
+  font-weight: 600;
+  margin-top: 10px;
 }
 
-.gallery-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.gallery-image {
-  max-width: 200px;
-  margin: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.club-photo {
-  max-width: 100%;
-  border-radius: 10px;
-}
-
-.club-description, .club-start-date, .club-members, .club-about {
-  margin-bottom: 15px;
-}
-
-h3 {
+/* Welcome Message Styling */
+.welcome-message {
   margin-top: 20px;
-  font-size: 1.5rem;
+  padding: 15px;
+  background-color: #d9f4e4;
+  border-left: 5px solid #34a853;
+  border-radius: 5px;
+  color: #2c6e4c;
+  text-align: center;
+}
+
+/* Header Styling */
+h3 {
+  font-size: 24px;
+  color: #34495e;
+  margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .club-details-container {
+    padding: 20px;
+  }
+
+  .club-name {
+    font-size: 28px;
+  }
+
+  .club-description,
+  .club-start-date,
+  .club-members,
+  .club-about {
+    font-size: 16px;
+  }
+
+  .join-btn {
+    font-size: 16px;
+    padding: 10px 25px;
+  }
 }

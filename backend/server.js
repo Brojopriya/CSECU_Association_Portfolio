@@ -435,15 +435,22 @@ app.post("/create-event", authenticateJWT, (req, res) => {
 //club de
 app.get('/clubs/:clubId', (req, res) => {
   const { clubId } = req.params;
-  
-  // Query to get the basic club details
+
+  // Query to get all club details including media
   const query = `
-    SELECT club_id, club_name, description, creation_date, profile_photo
+    SELECT 
+      club_id, 
+      club_name, 
+      description, 
+      creation_date, 
+      profile_photo, 
+      additional_photo, 
+      video 
     FROM Club
     WHERE club_id = ?
   `;
 
-  // Query the database to fetch club details by clubId
+  // Fetch club details by clubId
   db.query(query, [clubId], (err, results) => {
     if (err) {
       console.error('Database error:', err);
@@ -464,10 +471,10 @@ app.get('/clubs/:clubId', (req, res) => {
         return res.status(500).json({ success: false, message: 'Error fetching member count' });
       }
 
-      // Update the club object with the total member count
+      // Add the total member count to the club object
       club.total_members = memberResults[0].total_members;
 
-      // Respond with the full club details, including the total members count
+      // Respond with the full club details
       res.json({ club });
     });
   });
