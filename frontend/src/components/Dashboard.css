@@ -72,7 +72,7 @@
 .dashboard-title1 {
    /* Adjusted margin to provide space for the logo and caption */
   font-size: 1.8rem;
-  color: rgb(1, 6, 46);
+  color: rgb(1, 6, 46) !important;
   background-color: #c5e6b4;
  
 }

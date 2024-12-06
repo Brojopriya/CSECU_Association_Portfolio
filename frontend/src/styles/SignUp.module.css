@@ -1,4 +1,4 @@
-/* General body styling */
+/* Body Styling */
 body {
   font-family: 'Roboto', sans-serif;
   background: url('C:/pl/CSE_CU_portfolio/frontend/public/dep.jpg') no-repeat center center/cover;
@@ -24,41 +24,39 @@ body::before {
   z-index: -1;
 }
 
-/* Container styling */
+/* Login/Sign-Up Container */
 .container {
   position: relative;
-  width: 300px; /* Reduced width for compact box */
+  width: 300px;
   padding: 20px;
-  background-color: #1e2326;
+  background: #052121;
+  color: rgb(36, 194, 186);
   border-radius: 10px;
-  box-shadow: 0 8px 20px rgb(8, 8, 8);
+  box-shadow: 0 8px 20px rgba(8, 8, 8, 0.8);
   animation: fadeInUp 0.8s ease-out;
   transform-style: preserve-3d;
   transition: all 0.4s ease-in-out;
-  background: #052121;
-  color: rgb(36, 194, 186);
 }
 
-/* Heading styling */
-h2 {
+/* Heading Styling */
+h2, .heading {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 20px; /* Slightly larger font size */
+  font-size: 28px; /* Adjust font size here */
   margin-bottom: 15px;
   text-align: center;
-  color: rgb(9, 246, 234);
-  font-weight: bold; /* Make the heading bold */
+  color: #4caf50; /* Change color here */
+  font-weight: bold;
 }
 
-/* Form styling */
+/* Form Elements */
 form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
 }
 
-input, select, button {
-  width: 90%; /* Adjusted width for more compact inputs */
+input, button {
+  width: 90%;
   margin-bottom: 10px;
   padding: 12px 15px;
   font-size: 14px;
@@ -80,13 +78,13 @@ input:focus, button:hover {
   transform: scale(1.03);
 }
 
+/* Button Styling */
 button {
   background-color: #0a8472;
   color: white;
-  font-weight: bold; /* Make button text bold */
+  font-weight: bold;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
 }
 
 button:hover {
@@ -99,7 +97,7 @@ button:active {
   transform: translateY(1px);
 }
 
-/* Error messages */
+/* Error Message Styling */
 .error {
   color: red;
   font-size: 12px;
@@ -107,36 +105,45 @@ button:active {
   margin-bottom: 10px;
 }
 
-/* Link styling */
-.link {
+/* Links */
+.link, .sign-up-link, .login-box a {
   color: #0ac6d4;
   text-decoration: none;
-  font-weight: bold; /* Make link text bold */
+  font-weight: bold;
 }
 
-.link:hover {
+.link:hover, .login-box a:hover {
   text-decoration: underline;
 }
 
-/* Bold Text for "Already have an account?" */
-.sign-up-link {
-  font-weight: bold; /* Make the "Sign Up" text bold */
-  color: #0ac6d4;
-}
-
+/* Login Box Additional Styling */
 .login-box {
   margin-top: 16px;
   text-align: center;
   font-size: 12px;
 }
 
-.login-box a {
-  text-decoration: right;
-  color: #097889;
-  font-weight: bold;
-  transition: color 0.3s ease;
-}
-
 .login-box a:hover {
   color: #0bab9d;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Heading Styling */
+h2, .heading {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 28px; /* Adjust font size here */
+  margin-bottom: 15px;
+  text-align: center;
+  color: #7df0f2 !important; /* Force green color */
+  font-weight: bold;
 }
