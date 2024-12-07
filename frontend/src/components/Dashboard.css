@@ -13,16 +13,16 @@
   position: absolute;
   top: 20px;
   left: 20px;
-  width: 110px; /* Adjusted logo size */
+  width: 100px; /* Adjusted logo size */
   height: auto;
 }
 
 .logo-caption {
   position: absolute;
-  top: 110px; /* Adjusted position of caption below logo */
+  top: 100px; /* Adjusted position of caption below logo */
   left:-80px;
   margin: 80px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: bold;
   color: rgb(24, 23, 23);
   text-align: left;

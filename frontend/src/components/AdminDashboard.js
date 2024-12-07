@@ -9,7 +9,7 @@ function AdminDashboard() {
   // Simulate getting logged-in user info
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
-    setUser(loggedInUser || { username: "Admin", role: "Administrator" });
+    setUser(loggedInUser || { username: "Admin" });
   }, []);
 
   const handleViewClubs = () => navigate("/clubs");

@@ -35,7 +35,7 @@ body, html {
   left: 0;
   height: 100%;
   width: 100%;
-  background: linear-gradient(to bottom right, #7adbc477, #5c3f3fe0); /* Gradient background */
+  background: linear-gradient(to bottom right, #a2e8d977, #d1a7a7e0); /* Gradient background */
   z-index: 1; /* Places it above the background image but below the content */
 }
 
@@ -72,7 +72,7 @@ body, html {
   margin-bottom: 5px;
   text-shadow: 2px 2px 4px rgba(24, 24, 22, 0.8); /* Subtle text shadow for visibility */
   transition: color 0.3s ease; /* Smooth color transition */
-  color: #f3f392; /* Set the default color to black */
+  color: #03133a; /* Set the default color to black */
 }
 
 .hero-title:hover {
@@ -83,7 +83,7 @@ body, html {
 /* Subtitle Section */
 .hero-subtitle {
   font-size: clamp(1.5rem, 3vw, 2.5rem);
-  color: #f3d476;
+  color: #12065a;
   line-height: 1.6;
   text-shadow: 1px 1px 3px rgba(8, 8, 8, 0.8); /* Subtle text shadow */
 }
@@ -99,8 +99,8 @@ body, html {
 }
 
 .btn {
-  background: linear-gradient(135deg, #22ea68, #5fa7fa);
-  color: rgb(14, 13, 13); /* Text color of the button */
+  background: linear-gradient(135deg, #18ad4d, #598fce);
+  color: rgb(11, 10, 10); /* Text color of the button */
   border: none;
   text-color: rgb(17, 17, 17); /* Text color on hover */
   padding: 10px 20px;
@@ -113,7 +113,7 @@ body, html {
 
 .btn:hover {
   background: linear-gradient(135deg, #096a6c, #004d40); /* Dynamic color change */
-  color: #fff; /* Change text color on hover */
+  color: #e9e1e1; /* Change text color on hover */
   transform: scale(1.05);
   box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
 }

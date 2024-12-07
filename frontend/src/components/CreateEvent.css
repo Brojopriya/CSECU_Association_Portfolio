@@ -4,7 +4,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh; /* Full screen height */
-  background: linear-gradient(45deg, #f3f4f7, #dcdcdc); /* Light gradient background */
+  background: linear-gradient(45deg, #f3f4f7, #dcdcdc) ; /* Light gradient background */
   padding: 10px;
   box-sizing: border-box;
   overflow: hidden;
