@@ -9,11 +9,30 @@ function FrontPage() {
     <div className="front-page">
       {/* Logo in Top-Left Corner */}
       <img
-        src="/logo1.png"
+        src="/cse.png"
         alt="CSECU Logo"
         className="logo"
         onClick={() => navigate('/')} // Optional: Navigate to home or other route on click
       />
+
+      {/* University Logo with Caption */}
+<div className="university-logo-container">
+  <img
+    src="/logo1.png" // Replace with actual university logo path
+    alt="University Logo"
+    className="university-logo"
+    onClick={() => navigate('/')}
+  />
+  <p className="university-caption">University of Chittagong</p> {/* Caption below logo */}
+</div>
+
+
+      {/* About & Contact Links in Top-Right Corner */}
+      <div className="nav-links">
+        <a href="/about">About</a>
+        <a href="/contact">Contact us</a>
+      </div>
+
 
       {/* Hero Section */}
       <section className="hero">

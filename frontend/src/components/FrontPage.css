@@ -35,7 +35,7 @@ body, html {
   left: 0;
   height: 100%;
   width: 100%;
-  background: linear-gradient(to bottom right, #a2e8d977, #d1a7a7e0); /* Gradient background */
+  background: linear-gradient(to bottom right, #708f9796, #697e84e0); /* Gradient background */
   z-index: 1; /* Places it above the background image but below the content */
 }
 
@@ -53,6 +53,56 @@ body, html {
  
 }
 
+/* Container for university logo and caption */
+.university-logo-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+
+/* University Logo */
+.university-logo {
+  width: 80px; /* Adjust size */
+  height: auto;
+  cursor: pointer;
+}
+
+/* Caption Text */
+.university-caption {
+  font-size: 14px;
+  color: rgb(12, 12, 12);
+  margin-top: 5px; /* Space between logo and text */
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Navigation Links (Top-Right Corner) */
+/* Ensure navigation links are visible in the top-right corner */
+.nav-links {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 20px;
+  z-index: 3; /* Ensure it's above other elements */
+}
+
+.nav-links a {
+  color: rgb(9, 9, 9);
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #05135f;
+}
+
 
 /* Hero Section */
 .hero {
@@ -63,8 +113,8 @@ body, html {
 
 /* Title Section - Move the title down */
 .hero-title {
-  font-size: clamp(3rem, 6vw, 5rem);
-  font-weight: 700;
+  font-size: clamp(3rem, 4.5vw, 5rem);
+  font-weight: 600;
   margin: 0; /* Remove previous margin */
   background: linear-gradient(135deg, #9ff884, #f0ad06);
   -webkit-background-clip: text;
@@ -72,7 +122,7 @@ body, html {
   margin-bottom: 5px;
   text-shadow: 2px 2px 4px rgba(24, 24, 22, 0.8); /* Subtle text shadow for visibility */
   transition: color 0.3s ease; /* Smooth color transition */
-  color: #03133a; /* Set the default color to black */
+  color: #e1e1a8; /* Set the default color to black */
 }
 
 .hero-title:hover {
@@ -82,8 +132,8 @@ body, html {
 
 /* Subtitle Section */
 .hero-subtitle {
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
-  color: #12065a;
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+  color: #10100f;
   line-height: 1.6;
   text-shadow: 1px 1px 3px rgba(8, 8, 8, 0.8); /* Subtle text shadow */
 }
@@ -99,8 +149,8 @@ body, html {
 }
 
 .btn {
-  background: linear-gradient(135deg, #18ad4d, #598fce);
-  color: rgb(11, 10, 10); /* Text color of the button */
+  background: linear-gradient(135deg, #d0c906, #1198ad);
+  color: rgb(7, 5, 5); /* Text color of the button */
   border: none;
   text-color: rgb(17, 17, 17); /* Text color on hover */
   padding: 10px 20px;
@@ -127,5 +177,20 @@ body, html {
 
   .logo {
     width: 80px; /* Smaller logo for smaller screens */
+  }
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+  .btn {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+
+  .university-logo {
+    width: 80px;
+  }
+
+  .nav-links {
+    gap: 10px;
   }
 }
