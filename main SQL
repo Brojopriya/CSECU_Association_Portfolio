@@ -1,0 +1,111 @@
+DROP DATABASE IF EXISTS CSE;
+CREATE DATABASE CSE;
+USE CSE;
+
+-- User Table
+CREATE TABLE User (
+    user_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    phone_number VARCHAR(15),
+    password VARCHAR(255),
+    role VARCHAR(50)
+);
+
+-- Club Table
+CREATE TABLE Club (
+    club_id INT AUTO_INCREMENT PRIMARY KEY,
+    club_name VARCHAR(25) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    creation_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    user_id INT,  -- Foreign key to the User table
+    profile_photo VARCHAR(255),  -- Path to profile photo
+    additional_photo VARCHAR(255),  -- Path to additional photo
+    video VARCHAR(255),  -- Path to video file
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
+);
+
+
+
+-- Resource Table
+CREATE TABLE Resource (
+    resource_id INT PRIMARY KEY AUTO_INCREMENT, 
+    user_id INT NOT NULL,                       
+    title VARCHAR(100) NOT NULL,                
+    type VARCHAR(50),                           
+    upload_date DATETIME DEFAULT CURRENT_TIMESTAMP, 
+    file_path VARCHAR(255) NOT NULL,            
+    description TEXT,                           
+    FOREIGN KEY (user_id) REFERENCES User(user_id) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    INDEX(user_id)                             
+);
+
+-- Event Table
+CREATE TABLE Event (
+    event_id INT AUTO_INCREMENT PRIMARY KEY,
+    event_name VARCHAR(255),
+    club_id INT,
+    event_date DATETIME,
+    event_description VARCHAR(255),
+    location VARCHAR(255),
+    cover_photo VARCHAR(255),  -- Path to the cover photo image
+    video VARCHAR(255),        -- Path to the event video
+    FOREIGN KEY (club_id) REFERENCES Club(club_id) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE thoughts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    thought TEXT NOT NULL,
+    photo VARCHAR(255), -- Path to photo file
+    video VARCHAR(255), -- Path to video file
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
+     ON DELETE CASCADE 
+        ON UPDATE CASCADE
+);
+
+-- Registration Table
+
+CREATE TABLE Registrations (
+    registration_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    event_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES User(user_id) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES Event(event_id) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT unique_registration UNIQUE (user_id, event_id) -- Prevents multiple registrations for the same event by the same user
+);
+
+
+-- Insert Sample Data into User Table
+INSERT INTO User (user_id, name, email, phone_number, password, role)
+SELECT DISTINCT user_id, name, email, phone_number, password, role
+FROM CSECU.Book1;
+
+CREATE TABLE Members (
+    member_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    club_id INT,
+    join_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (club_id) REFERENCES Club(club_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    UNIQUE (user_id, club_id) -- Ensure a user can join a club only once
+);
+
+
+
+select * from thoughts;
